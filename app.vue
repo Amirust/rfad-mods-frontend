@@ -13,10 +13,10 @@
 
         <Link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <Link
-            rel="apple-touch-icon"
-            type="image/svg+xml"
-            sizes="any"
-            href="/apple-touch-icon.svg"
+          rel="apple-touch-icon"
+          type="image/svg+xml"
+          sizes="any"
+          href="/apple-touch-icon.svg"
         />
       </Head>
       <Body class="bg-black">

@@ -25,7 +25,7 @@ export default [
     ]
   },
   ...compat.extends(
-    'plugin:vue/strongly-recommended',
+    'plugin:vue/vue3-strongly-recommended',
     'eslint:recommended',
     '@vue/typescript/recommended',
     'prettier',
@@ -54,7 +54,9 @@ export default [
       'vue/valid-v-for': 'off',
       'array-bracket-spacing': [ 'error', 'always' ],
       'no-trailing-spaces': 'error',
-      'comma-dangle': [ 'error', 'never' ]
+      'comma-dangle': [ 'error', 'never' ],
+      'indent': [ 'error', 2 ],
+      'vue/html-indent': [ 'error', 2 ]
     }
   }
 ];
