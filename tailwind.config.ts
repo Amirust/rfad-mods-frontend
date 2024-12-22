@@ -39,7 +39,9 @@ export default {
         164: '46.25rem',
         168: '47.5rem'
       },
-      fontFamily: {},
+      fontFamily: {
+        sans: [ 'Futura PT', 'sans-serif' ]
+      },
       colors: {
         primary: '#FFEABF',
         secondary: '#BFAF8F',

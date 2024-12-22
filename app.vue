@@ -21,7 +21,7 @@
       </Head>
       <Body class="bg-black">
         <NuxtLayout>
-          <div>
+          <div class="z-10">
             <NuxtPage />
           </div>
         </NuxtLayout>
