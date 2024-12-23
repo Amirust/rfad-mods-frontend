@@ -22,6 +22,7 @@ export default {
         34: '8.5rem',
         42: '10.5rem',
         68: '17rem',
+        86: '21.5rem',
         100: '25rem',
         104: '26rem',
         108: '27rem',
@@ -45,6 +46,7 @@ export default {
       colors: {
         primary: '#FFEABF',
         secondary: '#BFAF8F',
+        secondaryHalf: '#BFAF8F80',
         block: '#0D0C0A'
       }
     }

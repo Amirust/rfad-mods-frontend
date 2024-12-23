@@ -10,7 +10,7 @@
       <NuxtLink class="text-secondary text-3xl font-light uppercase">Пресеты</NuxtLink>
       <NuxtLink class="text-secondary text-3xl font-light uppercase">Бусти</NuxtLink>
     </div>
-    <div class="ml-6 text-secondary flex flex-row items-center gap-6">
+    <div class="ml-6 text-secondary flex flex-row items-center gap-6 min-w-fit">
       <div class="line"/>
       <div class="flex flex-row gap-2 items-center">
         <img alt="pfp" src="assets/images/amirust-pfp-test.webp" class="w-9 h-9 rounded-md">
