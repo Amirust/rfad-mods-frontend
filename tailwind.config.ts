@@ -45,6 +45,7 @@ export default {
       },
       colors: {
         primary: '#FFEABF',
+        primaryHalf: '#FFEABF80',
         secondary: '#BFAF8F',
         secondaryHalf: '#BFAF8F80',
         block: '#0D0C0A'

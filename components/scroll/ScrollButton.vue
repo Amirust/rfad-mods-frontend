@@ -5,9 +5,9 @@ const props = defineProps<{
 </script>
 
 <template>
-  <button class="bg-secondaryHalf rounded-full p-3">
-    <LucideChevronLeft v-if="props.direction === 'left'" class="w-6 h-6 text-primary"/>
-    <LucideChevronRight v-else class="w-6 h-6 text-primary"/>
+  <button>
+    <LucideChevronLeft v-if="props.direction === 'left'" class="w-10 h-10 text-primaryHalf"/>
+    <LucideChevronRight v-else class="w-10 h-10 text-primaryHalf"/>
   </button>
 </template>
 
