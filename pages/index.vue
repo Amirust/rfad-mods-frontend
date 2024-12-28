@@ -69,7 +69,7 @@ onMounted(async () => {
             'fade-left': categoriesScrollableToLeft && !categoriesScrollableToRight,
             'fade-right': categoriesScrollableToRight && !categoriesScrollableToLeft,
           }" class="flex flex-row gap-6 overflow-auto overflow-x-hidden w-full">
-          <PopularCategory class="min-w-140 h-86"/>
+          <NuxtLink to="/mods"><PopularCategory class="min-w-140 h-86"/></NuxtLink>
           <PopularCategory class="min-w-140 h-86"/>
           <PopularCategory  class="min-w-140 h-86"/>
         </div>
