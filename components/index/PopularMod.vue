@@ -5,7 +5,7 @@
 <template>
   <div>
     <div class="w-full h-full relative">
-      <img class="w-full h-full mask" src="assets/images/zodiac-screen.webp">
+      <NuxtImg class="w-full h-full mask" src="zodiac-screen.webp" placeholder/>
       <div class="absolute bottom-0 left-0">
         <div class="mx-3">
           <h1 class="text-4xl text-primary font-light mb-1">Zodiac OST Pack</h1>

@@ -1,32 +1,36 @@
 <script setup lang="ts">
+import type {Mod} from '~/types/api/mods.types';
 
+const props = defineProps<{
+  mod: Mod;
+}>();
 </script>
 
 <template>
-  <div>
+  <NuxtLink :to="`/mods/${props.mod.id}`">
     <div class="w-148 h-full max-h-80 relative rounded-md">
-      <img class="w-full h-full mask rounded-md" src="assets/images/isla-test.png">
+      <NuxtImg class="w-full h-full mask rounded-md" src="isla-test.png" placeholder/>
       <div class="absolute bottom-0 left-0">
         <div class="mx-3">
-          <h1 class="text-4xl text-primary font-light mb-1">Zodiac OST Pack</h1>
+          <h1 class="text-4xl text-primary font-light mb-1">{{ props.mod.name }}</h1>
           <h3 class="text-lg text-primary font-light overflow-ellipsis line-clamp-2 w-full leading-5">
-            Музыкальный сборник от Zodiac. В основном с музыкой из других игр, таких как: Baldur's Gate 3, Nier, Pathfinedr, Magica. Музыкальный сборник от Zodiac. В основном с музыкой из других игр, таких как: Baldur's Gate 3, Nier, Pathfinedr, Magica.
+            {{ props.mod.shortDescription }}
           </h3>
           <div class="flex flex-row text-secondary font-normal my-2 gap-6">
             <div class="flex flex-row gap-2 items-center">
-              <LucideUserRound :stroke-width="3" :size="18"/> <span class="text-base text-center">Zodiac</span>
+              <LucideUserRound :stroke-width="3" :size="18"/> <span class="text-base text-center">{{ props.mod.author.globalName }}</span>
             </div>
             <div class="flex flex-row gap-2 items-center">
-              <LucideCloudDownload :stroke-width="3" :size="18"/> <span class="text-base text-center">1984</span>
+              <LucideCloudDownload :stroke-width="3" :size="18"/> <span class="text-base text-center">{{ props.mod.downloads }}</span>
             </div>
             <div class="flex flex-row gap-2 items-center">
-              <LucideClock :stroke-width="3" :size="16"/> <span class="text-base text-center">10.12.2024</span>
+              <LucideClock :stroke-width="3" :size="16"/> <span class="text-base text-center">{{ new Date(props.mod.lastUpdate).toLocaleDateString('ru') }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 
 <style scoped lang="scss">

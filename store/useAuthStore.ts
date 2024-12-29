@@ -31,6 +31,7 @@ export const useAuthStore = defineStore('auth', {
         if (this.authenticated && updateUser) await this.updateUserData()
       } catch (e: any) {
         if (e.errorCode === ErrorCode.TokenInvalid) this.authenticated = false
+        console.log('token', this.getToken, 'invalid', 'dropping values')
         this.dropValues()
       }
     },
