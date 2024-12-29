@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-const maxPages = 10;
+const inputModels = [ ref(''), ref('') ]
 
 const props = defineProps<{
   pages: number
@@ -13,6 +13,8 @@ const emit = defineEmits<{
 }>()
 
 const changePage = (page: number | string) => {
+  if (+page > props.pages) page = props.pages
+  inputModels.map((model) => model.value = '')
   emit('update:page', +page)
 }
 
@@ -26,46 +28,46 @@ const incrementPage = () => {
     emit('update:page', props.currentPage + 1)
 }
 
-const displayedPages = computed(() => {
-  const total = props.pages;
-  const current = props.currentPage;
-  const pages = [];
+const displayedPages = computed(() => calculatePaginationPages(props.currentPage, props.pages));
 
-  if (total <= maxPages) {
-    for (let i = 1; i <= total; i++) {
-      pages.push(i);
+const calculatePaginationPages = (currentPage: number, totalPages: number) => {
+  const pages = []
+
+  if (totalPages <= 5) {
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i)
     }
   } else {
-    if (current <= 5) {
-      for (let i = 1; i <= 7; i++) {
-        pages.push(i);
+    if (currentPage <= 3) {
+      for (let i = 1; i <= 3; i++) {
+        pages.push(i)
       }
-      pages.push('...');
-      pages.push(total);
-    } else if (current > total - 5) {
-      pages.push(1);
-      pages.push('...');
-      for (let i = total - 6; i <= total; i++) {
-        pages.push(i);
+
+      pages.push(-1)
+      pages.push(totalPages)
+    } else if (currentPage >= totalPages - 2) {
+      pages.push(1)
+      pages.push(-1)
+
+      for (let i = totalPages - 2; i <= totalPages; i++) {
+        pages.push(i)
       }
     } else {
-      pages.push(1);
-      pages.push('...');
-      for (let i = current - 2; i <= current + 2; i++) {
-        pages.push(i);
-      }
-      pages.push('...');
-      pages.push(total);
+      pages.push(...[ 1, -1, currentPage, -1, totalPages ])
     }
   }
 
-  return pages;
-});
+  return pages
+}
+
+const getInputModel = (index: number) => {
+  return index === 1 ? 0 : 1
+}
 </script>
 
 <template>
-  <div class="w-full h-10">
-    <div class="flex flex-row gap-5 text-primary items-center font-medium">
+  <div class="w-fit h-10">
+    <div class="flex flex-row gap-3 text-primary items-center font-medium">
       <LucideChevronLeft
         class="w-5 h-5"
         :class="{
@@ -73,18 +75,33 @@ const displayedPages = computed(() => {
         }"
         @click="decrementPage"
       />
-      <div
-        class="page-button flex items-center text-center justify-center transition-colors"
-        v-for="page in displayedPages"
-        :key="page"
-        :class="{
-          'bg-primary text-black': page === props.currentPage,
-          'bg-secondaryHalf': page !== props.currentPage,
-          'cursor-pointer': page !== '...',
-          'cursor-default': page === '...'
-        }"
-        @click="page !== '...' && changePage(page)"
-      >{{ page }}</div>
+      <div class="flex flex-row gap-3 items-center text-primary font-medium">
+        <template v-for="(page, i) in displayedPages">
+          <template v-if="page === -1">
+            <input
+              :key="i"
+              class="page-button bg-secondaryHalf text-primary placeholder-primary text-center outline-none focus:outline-none"
+              :max="props.pages"
+              min="1"
+              placeholder="..."
+              v-model="inputModels[getInputModel(i)].value"
+              @keydown.enter="changePage(inputModels[getInputModel(i)].value)"
+              @focusout="inputModels[getInputModel(i)].value = ''"
+            >
+          </template>
+          <template v-else>
+            <div
+              :key="i"
+              @click="changePage(page)"
+              :class="{
+                'bg-primary text-black': page === props.currentPage,
+                'bg-secondaryHalf text-primary': page !== props.currentPage
+              }"
+              class="page-button cursor-pointer text-center items-center flex justify-center"
+            >{{ page }}</div>
+          </template>
+        </template>
+      </div>
       <LucideChevronRight
         class="w-5 h-5"
         :class="{

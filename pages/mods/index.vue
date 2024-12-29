@@ -43,8 +43,8 @@ onMounted(() => {
   <div>
     <div class="mt-24 mb-10 flex flex-row gap-14">
       <FilterSelector @active:update="updateTags" :active="active"/>
-      <div class="w-full h-full min-h-[75svh] flex flex-col gap-10 mb-5">
-        <div class="flex flex-wrap w-full gap-y-8 justify-between content-start h-full min-h-[74svh]">
+      <div class="w-full h-full flex flex-col gap-10 mb-5">
+        <div class="flex flex-wrap w-full gap-y-8 justify-between content-start h-full">
           <transition-group name="fade" mode="out-in">
             <template v-if="showSkeleton">
               <ModSmallSkeleton class="h-80" v-for="i in cho" :key="i"/>
