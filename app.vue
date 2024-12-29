@@ -19,7 +19,7 @@
           href="/apple-touch-icon.svg"
         />
       </Head>
-      <Body class="bg-black w-full h-full">
+      <Body class="bg-black w-full h-full min-h-svh">
         <NuxtLayout>
           <div class="z-10">
             <NuxtPage />

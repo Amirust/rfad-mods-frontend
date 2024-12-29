@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mx-36">
+    <div class="mx-36 h-svh">
       <AppHeader/>
       <slot />
     </div>

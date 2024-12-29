@@ -1,0 +1,35 @@
+@mixin skeleton($width, $height, $border-radius) {
+  --color-layer-1: 13 13 13;
+  --color-layer-2: 18 18 18;
+
+  $shimmer-width: 700px;
+  $gradient-stop-1: calc($shimmer-width * 0.5);
+  $gradient-stop-2: calc($shimmer-width * 0.75);
+
+  width: $width;
+  height: $height;
+  border: none;
+  border-radius: $border-radius;
+  background-image: linear-gradient(to right, rgb(var(--color-layer-1)) 0, rgb(var(--color-layer-2)) $gradient-stop-1, rgb(var(--color-layer-1)) $gradient-stop-2);
+  background-attachment: fixed;
+  background-size: $shimmer-width 100%;
+  animation-name: shimmer;
+  animation-duration: 1.2s;
+  animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+  animation-iteration-count: infinite;
+  will-change: background-position;
+
+  @keyframes shimmer {
+    0%{
+      background-position: 0 0;
+    }
+
+    100%{
+      background-position: $shimmer-width 0;
+    }
+  }
+
+  /*@media (prefers-reduced-motion: reduce) {
+    background: rgb(var(--color-layer-1)) none;
+  }*/
+}
