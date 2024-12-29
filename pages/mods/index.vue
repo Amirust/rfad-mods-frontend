@@ -5,63 +5,83 @@ import ModSmallComponent from '~/components/mods/ModSmallComponent.vue';
 import ModSmallSkeleton from '~/components/mods/ModSmallSkeleton.vue';
 import PageSelector from '~/components/page-selector/PageSelector.vue';
 import SkeletonPageSelector from '~/components/page-selector/SkeletonPageSelector.vue';
+import type {FindResult} from '~/types/api/mods.types';
+import {useModsApi} from '~/composables/useModsApi';
+import waitUtil from '~/utils/wait.util';
 
 const router = useRouter();
 const route = useRoute();
 
-const pages = ref(20);
+const mods = ref<FindResult | null>(null);
+
+const pages = computed(() => mods.value?.totalPages ?? 1);
 const page = ref(1);
 
-const cho = ref(2);
 const showSkeleton = ref(true);
 const showSkeletonPages = ref(true);
 
-const active: Ref<number[]> = ref([ ...(route.query.tags ? `${route.query.tags}`.split(',').map(Number) : []) ]);
+const activeTags: Ref<number[]> = ref([ ...(route.query.tags ? `${route.query.tags}`.split(',').map(Number) : []) ]);
 
 const updateTags = (value: number[]) => {
-  active.value = value;
-  router.replace({ query: { ...route.query, tags: active.value.join(',') } });
+  activeTags.value = value;
+  router.replace({ query: { ...route.query, tags: activeTags.value.join(',') } });
+
+  loadPage(true);
+};
+
+const loadPage = async (pagesLoading: boolean = false) => {
+  showSkeleton.value = true;
+  showSkeletonPages.value = pagesLoading;
+
+  mods.value = await useModsApi().findAll(activeTags.value, page.value, 2);
+
+  await waitUtil(500);
+
+  showSkeleton.value = false;
+  showSkeletonPages.value = false;
 };
 
 const changePage = (value: number) => {
   page.value = value;
-  showSkeleton.value = true;
-  setTimeout(() => {
-    showSkeleton.value = false;
-  }, 1000);
+
+  loadPage();
 };
 
 onMounted(() => {
-  setTimeout(() => {
-    showSkeleton.value = false;
-    showSkeletonPages.value = false;
-  }, 1000);
+  loadPage();
 });
 </script>
 
 <template>
   <div>
     <div class="mt-24 mb-10 flex flex-row gap-14">
-      <FilterSelector @active:update="updateTags" :active="active"/>
+      <FilterSelector @active:update="updateTags" :active="activeTags"/>
       <div class="w-full h-full flex flex-col gap-10 mb-5">
-        <div class="flex flex-wrap w-full gap-y-8 justify-between content-start h-full">
+        <template v-if="(mods?.mods.length ?? 0) > 0">
+          <div class="flex flex-wrap w-full gap-y-8 justify-between content-start h-full">
+            <transition-group name="fade" mode="out-in">
+              <template v-if="showSkeleton">
+                <ModSmallSkeleton class="h-80" v-for="i in 2" :key="i"/>
+              </template>
+              <template v-else>
+                <ModSmallComponent class="h-80 w-fit" v-for="i in mods?.mods" :key="i.id" :mod="i"/>
+              </template>
+            </transition-group>
+          </div>
           <transition-group name="fade" mode="out-in">
-            <template v-if="showSkeleton">
-              <ModSmallSkeleton class="h-80" v-for="i in cho" :key="i"/>
+            <template v-if="showSkeletonPages">
+              <SkeletonPageSelector/>
             </template>
             <template v-else>
-              <ModSmallComponent class="h-80 w-fit" v-for="i in cho" :key="i"/>
+              <PageSelector :pages="pages" :current-page="page" @update:page="changePage"/>
             </template>
           </transition-group>
-        </div>
-        <transition-group name="fade" mode="out-in">
-          <template v-if="showSkeletonPages">
-            <SkeletonPageSelector/>
-          </template>
-          <template v-else>
-            <PageSelector :pages="pages" :current-page="page" @update:page="changePage"/>
-          </template>
-        </transition-group>
+        </template>
+        <template v-else>
+          <div class="w-full h-full flex flex-col items-center justify-center">
+            <h1 class="text-4xl text-primary font-light">Ничего не найдено</h1>
+          </div>
+        </template>
       </div>
     </div>
   </div>

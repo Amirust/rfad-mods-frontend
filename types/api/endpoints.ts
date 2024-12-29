@@ -1,3 +1,5 @@
+import type {ModTags} from '~/types/mod-tags.enum';
+
 export class Endpoints {
   // Auth
   static authorizeUser(): string {
@@ -8,7 +10,17 @@ export class Endpoints {
     return '/auth/verify'
   }
 
+  // Users
   static getUser(id: string): string {
     return `/users/${id}`
+  }
+
+  // Mods
+  static getMod(id: string): string {
+    return `/mods/${id}`
+  }
+
+  static getMods(tags: ModTags[], page: number = 1, limit: number = 6): string {
+    return `/mods?tags=${tags.join(',')}&page=${page}&limit=${limit}`
   }
 }

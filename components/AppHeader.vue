@@ -9,9 +9,9 @@ const img = useImage()
   <div class="pt-5 w-full flex flex-row">
     <NuxtLink to="/" class="text-primary text-4xl font-medium min-w-fit hover:text-secondary transition-colors">RFAD SE</NuxtLink>
     <div class="flex flex-row w-full items-center justify-end gap-12">
-      <NuxtLink class="text-secondary text-3xl font-light uppercase">Опциональные</NuxtLink>
-      <NuxtLink class="text-secondary text-3xl font-light uppercase">Пресеты</NuxtLink>
-      <NuxtLink class="text-secondary text-3xl font-light uppercase">Бусти</NuxtLink>
+      <NuxtLink to="/mods" class="nuxt-link text-3xl font-light uppercase hover:text-primary transition-colors" active-class="active">Опциональные</NuxtLink>
+      <NuxtLink class="nuxt-link text-3xl font-light uppercase hover:text-primary transition-colors" active-class="active">Пресеты</NuxtLink>
+      <NuxtLink class="nuxt-link text-3xl font-light uppercase hover:text-primary transition-colors" active-class="active">Бусти</NuxtLink>
     </div>
     <div class="ml-6 text-secondary flex flex-row items-center gap-6 min-w-fit">
       <div class="line"/>
@@ -40,6 +40,14 @@ const img = useImage()
 .line {
   border-left: 1px solid;
   @apply border-secondary h-7;
+}
+
+.active {
+  @apply text-primary;
+}
+
+.nuxt-link:not(.active) {
+  @apply text-secondary;
 }
 
 .fade-enter-active,
