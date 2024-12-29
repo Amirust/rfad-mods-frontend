@@ -33,5 +33,9 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: [ 'nuxt-lucide-icons', '@pinia/nuxt' ]
+  image: {
+    dir: 'assets/images'
+  },
+
+  modules: [ 'nuxt-lucide-icons', '@pinia/nuxt', '@nuxt/image' ]
 });
