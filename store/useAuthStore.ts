@@ -1,7 +1,7 @@
-import type {CachedUser} from '~/types/user.interface';
-import {useAuthApi} from '~/composables/useAuthApi';
-import {ErrorCode} from '~/types/api/ErrorCode.enum';
-import {useUsersApi} from '~/composables/useUsersApi';
+import type { CachedUser } from '~/types/user.interface';
+import { useAuthApi } from '~/composables/useAuthApi';
+import { ErrorCode } from '~/types/api/ErrorCode.enum';
+import { useUsersApi } from '~/composables/useUsersApi';
 
 export interface AuthState {
   user: CachedUser | null
@@ -30,18 +30,23 @@ export const useAuthStore = defineStore('auth', {
         this.authenticated = await useAuthApi().validateToken()
         if (this.authenticated && updateUser) await this.updateUserData()
       } catch (e: any) {
-        if (e.errorCode === ErrorCode.TokenInvalid) this.authenticated = false
+        if (e.errorCode === ErrorCode.TokenInvalid) {
+          this.authenticated = false
+          this.dropValues(true)
+        }
         console.log('token', this.getToken, 'invalid', 'dropping values')
         this.dropValues()
       }
     },
 
-    dropValues() {
+    dropValues(withToken: boolean = false) {
       this.user = null
-      this.token = null
       this.authenticated = false
       localStorage.removeItem('user')
-      localStorage.removeItem('token')
+      if (withToken) {
+        this.token = null
+        localStorage.removeItem('token')
+      }
     },
 
     async updateUserData() {

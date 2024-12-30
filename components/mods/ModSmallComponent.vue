@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Mod} from '~/types/api/mods.types';
+import type { Mod } from '~/types/api/mods.types';
 
 const props = defineProps<{
   mod: Mod;
@@ -7,9 +7,9 @@ const props = defineProps<{
 </script>
 
 <template>
-  <NuxtLink :to="`/mods/${props.mod.id}`">
+  <NuxtLink :to="`/mods/${props.mod.id}?tagsCount=${props.mod.tags.length}`">
     <div class="w-148 h-full max-h-80 relative rounded-md">
-      <NuxtImg class="w-full h-full mask rounded-md" src="isla-test.png" placeholder/>
+      <NuxtImg class="w-full h-full mask rounded-md" :src="mod.images[0] ?? 'isla-test.png'" placeholder/>
       <div class="absolute bottom-0 left-0">
         <div class="mx-3">
           <h1 class="text-4xl text-primary font-light mb-1">{{ props.mod.name }}</h1>

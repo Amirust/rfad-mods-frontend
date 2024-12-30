@@ -1,6 +1,6 @@
-import {ModTags} from '~/types/mod-tags.enum';
+import { ModTags } from '~/types/mod-tags.enum';
 
-export const TagList = [
+export const ModTagList = [
   // Категории
   {
     category: 'Категории',

@@ -51,6 +51,8 @@ export default {
         primaryHalf: '#FFEABF80',
         secondary: '#BFAF8F',
         secondaryHalf: '#BFAF8F80',
+        'primary-25': '#FFEABF40',
+        'secondary-25': '#BFAF8F40',
         block: '#0D0C0A'
       }
     }
