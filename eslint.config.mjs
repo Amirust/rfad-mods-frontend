@@ -53,6 +53,7 @@ export default [
       'vue/multi-word-component-names': 'off',
       'vue/valid-v-for': 'off',
       'array-bracket-spacing': [ 'error', 'always' ],
+      'object-curly-spacing': [ 'error', 'always' ],
       'no-trailing-spaces': 'error',
       'comma-dangle': [ 'error', 'never' ],
       'indent': [ 'error', 2 ],

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TagList } from 'assets/manifest/mod.tags'
+import { ModTagList } from 'assets/manifest/mod.tags'
 import type {FilterSelectorEvents, FilterSelectorProps} from '~/types/filter.interface';
 
 const props = defineProps<FilterSelectorProps>()
@@ -9,7 +9,7 @@ const allowedToDisplay: Ref<number[]> = ref([])
 const selected = ref<number[]>([])
 
 const updateRefList = () => {
-  return TagList.map((item) => {
+  return ModTagList.map((item) => {
     if (!item.doNotHide && allowedToDisplay.value.length && !item.values.every(({value}) => allowedToDisplay.value.includes(value))) return undefined
     return {
       ...item,

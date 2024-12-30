@@ -35,7 +35,7 @@ const loadPage = async (pagesLoading: boolean = false) => {
 
   mods.value = await useModsApi().findAll(activeTags.value, page.value, 2);
 
-  await waitUtil(500);
+  // await waitUtil(200);
 
   showSkeleton.value = false;
   showSkeletonPages.value = false;
