@@ -53,7 +53,8 @@ export default {
         secondaryHalf: '#BFAF8F80',
         'primary-25': '#FFEABF40',
         'secondary-25': '#BFAF8F40',
-        block: '#0D0C0A'
+        block: '#0D0C0A',
+        error: '#D42E4F'
       }
     }
   },
