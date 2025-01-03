@@ -55,9 +55,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mt-24 mb-10 flex flex-col gap-12">
+  <div class="mt-18 mb-10 flex flex-col gap-12">
     <div class="flex flex-col gap-5">
-      <h1 class="uppercase text-4xl text-primary font-light">Популярные Категории</h1>
+      <h1 class="uppercase text-3xl text-secondary font-light">Популярные Категории</h1>
       <div class="flex flex-row gap-6 overflow-auto w-full relative">
         <ScrollButton
           :class="{
@@ -69,9 +69,9 @@ onMounted(async () => {
             'fade-left': categoriesScrollableToLeft && !categoriesScrollableToRight,
             'fade-right': categoriesScrollableToRight && !categoriesScrollableToLeft,
           }" class="flex flex-row gap-6 overflow-auto overflow-x-hidden w-full">
-          <NuxtLink to="/mods"><PopularCategory class="min-w-140 h-86"/></NuxtLink>
-          <PopularCategory class="min-w-140 h-86"/>
-          <PopularCategory  class="min-w-140 h-86"/>
+          <NuxtLink to="/mods"><PopularCategory class="min-w-132 max-w-132 h-72"/></NuxtLink>
+          <PopularCategory class="min-w-132 max-w-132 h-72"/>
+          <PopularCategory class="min-w-132 max-w-132 h-72"/>
         </div>
         <ScrollButton
           :class="{
@@ -80,7 +80,7 @@ onMounted(async () => {
       </div>
     </div>
     <div class="flex flex-col gap-5">
-      <h1 class="uppercase text-4xl text-primary font-light">Популярные Моды</h1>
+      <h1 class="uppercase text-3xl text-secondary font-light">Популярные Моды</h1>
       <div class="flex flex-row gap-6 overflow-auto w-full relative">
         <ScrollButton
           :class="{
@@ -92,9 +92,9 @@ onMounted(async () => {
             'fade-left': modsScrollableToLeft && !modsScrollableToRight,
             'fade-right': modsScrollableToRight && !modsScrollableToLeft,
           }" class="flex flex-row gap-6 overflow-auto w-full overflow-x-hidden">
-          <PopularMod class="min-w-140 h-86"/>
-          <PopularMod class="min-w-140 h-86"/>
-          <PopularMod class="min-w-140 h-86"/>
+          <PopularMod class="min-w-132 max-w-132 h-72"/>
+          <PopularMod class="min-w-132 max-w-132 h-72"/>
+          <PopularMod class="min-w-132 max-w-132 h-72"/>
         </div>
         <ScrollButton
           :class="{

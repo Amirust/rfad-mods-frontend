@@ -45,7 +45,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mt-24 mb-10 flex flex-row gap-14 text-primary relative">
+  <div class="mt-18 top-nav mb-10 flex flex-row gap-14 text-primary relative">
     <transition name="fade">
       <template v-if="!isLoading && mod">
         <div class="min-w-72 max-w-72 text-primary flex flex-col gap-5">

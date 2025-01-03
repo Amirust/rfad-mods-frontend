@@ -1,6 +1,10 @@
 const config = { boldClass: 'text-primary font-normal' };
 
 export default function transformMarkdown(markdown: string): string {
+  // XSS protection
+  markdown = markdown.replace(/<style>.*<\/style>/g, '');
+  markdown = markdown.replace(/<script>.*<\/script>/g, '');
+
   const lines = markdown.split('\n');
   const numberedListRegex = /^(\d+)\.\s+(.*)$/;
   const resultLines: string[] = [];
@@ -13,7 +17,7 @@ export default function transformMarkdown(markdown: string): string {
     if (match) {
       if (!inNumberedList) {
         inNumberedList = true;
-        resultLines.push('<ol style="padding-left: 1em" class="list-decimal list-inside">');
+        resultLines.push('<ol style="padding-left: 1em; list-style: decimal" class="list-decimal list-inside">');
       }
       if (currentListItems.length > 0) {
         resultLines.push(`<li>${currentListItems.join('<br>')}</li>`);
