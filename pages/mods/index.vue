@@ -5,8 +5,8 @@ import ModSmallComponent from '~/components/mods/ModSmallComponent.vue';
 import ModSmallSkeleton from '~/components/mods/ModSmallSkeleton.vue';
 import PageSelector from '~/components/page-selector/PageSelector.vue';
 import SkeletonPageSelector from '~/components/page-selector/SkeletonPageSelector.vue';
-import type {FindResult} from '~/types/api/mods.types';
-import {useModsApi} from '~/composables/useModsApi';
+import type { FindResult } from '~/types/api/mods.types';
+import { useModsApi } from '~/composables/useModsApi';
 import waitUtil from '~/utils/wait.util';
 
 const router = useRouter();
@@ -33,9 +33,9 @@ const loadPage = async (pagesLoading: boolean = false) => {
   showSkeleton.value = true;
   showSkeletonPages.value = pagesLoading;
 
-  mods.value = await useModsApi().findAll(activeTags.value, page.value, 2);
+  mods.value = await useModsApi().findAll(activeTags.value, page.value, 6);
 
-  // await waitUtil(200);
+  // await waitUtil(100);
 
   showSkeleton.value = false;
   showSkeletonPages.value = false;
@@ -54,17 +54,17 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="mt-24 mb-10 flex flex-row gap-14">
+    <div class="mt-18 mb-10 flex flex-row gap-24">
       <FilterSelector @active:update="updateTags" :active="activeTags"/>
       <div class="w-full h-full flex flex-col gap-10 mb-5">
         <template v-if="(mods?.mods.length ?? 0) > 0">
           <div class="flex flex-wrap w-full gap-y-8 justify-between content-start h-full">
             <transition-group name="fade" mode="out-in">
               <template v-if="showSkeleton">
-                <ModSmallSkeleton class="h-80" v-for="i in 2" :key="i"/>
+                <ModSmallSkeleton class="w-60 h-60" v-for="i in 2" :key="i"/>
               </template>
               <template v-else>
-                <ModSmallComponent class="h-80 w-fit" v-for="i in mods?.mods" :key="i.id" :mod="i"/>
+                <ModSmallComponent class="w-124 h-60" v-for="i in mods?.mods" :key="i.id" :mod="i"/>
               </template>
             </transition-group>
           </div>

@@ -4,12 +4,12 @@
 
 <template>
   <div>
-    <div class="w-full h-full relative">
+    <div class="h-full w-full relative">
       <NuxtImg class="w-full h-full mask" src="zodiac-screen.webp" placeholder/>
       <div class="absolute bottom-0 left-0">
         <div class="mx-3">
-          <h1 class="text-4xl text-primary font-light mb-1">Zodiac OST Pack</h1>
-          <h3 class="text-lg text-primary font-light overflow-ellipsis line-clamp-2 w-full leading-5">
+          <h1 class="text-3xl text-primary font-light mb-1">Zodiac OST Pack</h1>
+          <h3 class="text-base text-primary font-light overflow-ellipsis line-clamp-2 w-full leading-5">
             Музыкальный сборник от Zodiac. В основном с музыкой из других игр, таких как: Baldur's Gate 3, Nier, Pathfinedr, Magica. Музыкальный сборник от Zodiac. В основном с музыкой из других игр, таких как: Baldur's Gate 3, Nier, Pathfinedr, Magica.
           </h3>
           <div class="flex flex-row text-secondary font-normal my-2 gap-6">

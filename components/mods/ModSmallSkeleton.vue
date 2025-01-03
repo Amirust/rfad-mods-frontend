@@ -5,7 +5,7 @@ import Skeleton from '~/components/base/Skeleton.vue';
 
 <template>
   <div class="">
-    <div class="w-148 h-80 max-h-80 relative rounded-md">
+    <div class="w-132 h-72 max-h-72 relative rounded-md">
       <Skeleton/>
     </div>
   </div>

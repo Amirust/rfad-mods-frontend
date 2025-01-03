@@ -8,12 +8,12 @@ const props = defineProps<{
 
 <template>
   <NuxtLink :to="`/mods/${props.mod.id}?tagsCount=${props.mod.tags.length}`">
-    <div class="w-148 h-full max-h-80 relative rounded-md">
+    <div class="w-full h-full max-h-80 relative rounded-md">
       <NuxtImg class="w-full h-full mask rounded-md" :src="mod.images[0] ?? 'isla-test.png'" placeholder/>
       <div class="absolute bottom-0 left-0">
         <div class="mx-3">
-          <h1 class="text-4xl text-primary font-light mb-1">{{ props.mod.name }}</h1>
-          <h3 class="text-lg text-primary font-light overflow-ellipsis line-clamp-2 w-full leading-5">
+          <h1 class="text-3xl text-primary font-light mb-1">{{ props.mod.name }}</h1>
+          <h3 class="text-base text-primary font-light overflow-ellipsis line-clamp-2 w-full leading-5">
             {{ props.mod.shortDescription }}
           </h3>
           <div class="flex flex-row text-secondary font-normal my-2 gap-6">

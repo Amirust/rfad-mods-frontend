@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ModTagList } from 'assets/manifest/mod.tags'
-import type {FilterSelectorEvents, FilterSelectorProps} from '~/types/filter.interface';
+import type { FilterSelectorEvents, FilterSelectorProps } from '~/types/filter.interface';
 
 const props = defineProps<FilterSelectorProps>()
 const emit = defineEmits<FilterSelectorEvents>()
@@ -10,7 +10,7 @@ const selected = ref<number[]>([])
 
 const updateRefList = () => {
   return ModTagList.map((item) => {
-    if (!item.doNotHide && allowedToDisplay.value.length && !item.values.every(({value}) => allowedToDisplay.value.includes(value))) return undefined
+    if (!item.doNotHide && allowedToDisplay.value.length && !item.values.every(({ value }) => allowedToDisplay.value.includes(value))) return undefined
     return {
       ...item,
       values: item.values.map((tag) => {
@@ -29,7 +29,7 @@ const updateValue = (value: number, active: boolean) => {
   const parentIfExist = refList.value.find((item) => item?.parent === value)
 
   if (parentIfExist) {
-    allowedToDisplay.value = active ? [ value, ...parentIfExist.values.map(({value}) => value) ] : []
+    allowedToDisplay.value = active ? [ value, ...parentIfExist.values.map(({ value }) => value) ] : []
     selected.value = []
   }
 
@@ -49,10 +49,10 @@ onMounted(() => {
 
 <template>
   <!-- Just dont ask -->
-  <div class="flex flex-col gap-9 mt-[-5px]">
+  <div class="flex flex-col gap-9 mt-[-6px]">
     <transition-group name="fade">
-      <div v-for="item in refList" :key="item?.category" class="flex flex-col gap-4">
-        <span class="text-primary font-medium text-2xl">{{ item?.category }}</span>
+      <div v-for="item in refList" :key="item?.category" class="flex flex-col gap-3">
+        <span class="text-primary font-medium text-xl">{{ item?.category }}</span>
         <div class="flex flex-row flex-wrap w-72 gap-y-3 gap-x-6">
           <FilterValue
             @active:update="updateValue" :class="{
