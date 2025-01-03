@@ -23,8 +23,12 @@ import ModsCategory from '~/components/create/categories/ModsCategory.vue';
             <h3 class="text-3xl font-normal text-primary uppercase">Выберите Категорию</h3>
           </div>
           <div class="flex flex-row gap-7">
-            <ModsCategory class="w-100 h-60"/>
-            <PresetsCategory class="w-100 h-60"/>
+            <NuxtLink to="/create/mods/step1">
+              <ModsCategory class="w-100 h-60"/>
+            </NuxtLink>
+            <NuxtLink  to="/create/preset/step1">
+              <PresetsCategory class="w-100 h-60"/>
+            </NuxtLink>
           </div>
         </div>
       </div>

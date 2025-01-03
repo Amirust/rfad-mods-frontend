@@ -1,5 +1,17 @@
 import { ModTags } from '~/types/mod-tags.enum';
 
+export interface ModTagsCategory {
+  category: string;
+  doNotHide?: boolean;
+  values: ModTag[];
+}
+
+export interface ModTag {
+  value: ModTags;
+  label: string;
+  parent?: ModTags;
+}
+
 export const ModTagList = [
   // Категории
   {
@@ -111,4 +123,4 @@ export const ModTagList = [
       }
     ]
   }
-]
+] as ModTagsCategory[];
