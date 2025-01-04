@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ModTagList } from 'assets/manifest/mod.tags'
 import type { FilterSelectorEvents, FilterSelectorProps } from '~/types/filter.interface';
+import ModsFilterCollapse from '~/components/mods/ModsFilterCollapse.vue';
 
 const props = defineProps<FilterSelectorProps>()
 const emit = defineEmits<FilterSelectorEvents>()
@@ -48,20 +49,38 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Just dont ask -->
-  <div class="flex flex-col gap-9 mt-[-6px]">
-    <transition-group name="fade">
-      <div v-for="item in refList" :key="item?.category" class="flex flex-col gap-3">
-        <span class="text-primary font-medium text-xl">{{ item?.category }}</span>
-        <div class="flex flex-row flex-wrap w-72 gap-y-3 gap-x-6">
-          <FilterValue
-            @active:update="updateValue" :class="{
-              'cursor-not-allowed pointer-events-none opacity-75': tag.disabled,
-              'cursor-pointer': !tag.disabled
-            }" v-for="tag in item?.values" :value="tag.value" :label="tag.label" :active="tag.active" />
+  <div>
+    <!-- Just dont ask -->
+    <div class="hidden xl:flex flex-col gap-9 mt-[-6px]">
+      <transition-group name="fade">
+        <div v-for="item in refList" :key="item?.category" class="flex flex-col gap-3">
+          <span class="text-primary font-medium text-xl">{{ item?.category }}</span>
+          <div class="flex flex-row flex-wrap w-72 gap-y-3 gap-x-6">
+            <FilterValue
+              @active:update="updateValue" :class="{
+                'cursor-not-allowed pointer-events-none opacity-75': tag.disabled,
+                'cursor-pointer': !tag.disabled
+              }" v-for="tag in item?.values" :value="tag.value" :label="tag.label" :active="tag.active" />
+          </div>
         </div>
-      </div>
-    </transition-group>
+      </transition-group>
+    </div>
+    <div class="xl:hidden w-full">
+      <ModsFilterCollapse>
+        <transition-group name="fade">
+          <div v-for="item in refList" :key="item?.category" class="flex flex-col gap-3">
+            <span class="text-primary font-medium text-xl">{{ item?.category }}</span>
+            <div class="flex flex-row flex-wrap w-72 gap-y-3 gap-x-6">
+              <FilterValue
+                @active:update="updateValue" :class="{
+                  'cursor-not-allowed pointer-events-none opacity-75': tag.disabled,
+                  'cursor-pointer': !tag.disabled
+                }" v-for="tag in item?.values" :value="tag.value" :label="tag.label" :active="tag.active" />
+            </div>
+          </div>
+        </transition-group>
+      </ModsFilterCollapse>
+    </div>
   </div>
 </template>
 
@@ -82,5 +101,17 @@ onMounted(() => {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(0);
+}
+
+
+.expand-enter-active,
+.expand-leave-active {
+  transition: opacity 0.3s, height 0.3s;
+}
+
+.expand-enter,
+.expand-leave-to {
+  opacity: 0;
+  height: 0;
 }
 </style>

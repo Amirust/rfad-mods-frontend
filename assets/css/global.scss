@@ -16,3 +16,12 @@
   -webkit-mask-image: linear-gradient($deg, transparent 0%, transparent $start, black $end);
   mask-image: linear-gradient($deg, transparent 0%, transparent $start, black $end);
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
