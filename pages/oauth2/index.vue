@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {useAuthApi} from '~/composables/useAuthApi';
-import {ErrorCode} from '~/types/api/ErrorCode.enum';
+import { useAuthApi } from '~/composables/useAuthApi';
+import { ErrorCode } from '~/types/api/ErrorCode.enum';
 import Button from '~/components/base/Button.vue';
-import {useAuthStore} from '~/store/useAuthStore';
+import { useAuthStore } from '~/store/useAuthStore';
 
 const route = useRoute()
 

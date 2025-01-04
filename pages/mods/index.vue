@@ -35,7 +35,7 @@ const loadPage = async (pagesLoading: boolean = false) => {
 
   mods.value = await useModsApi().findAll(activeTags.value, page.value, 6);
 
-  // await waitUtil(100);
+  // await waitUtil(300);
 
   showSkeleton.value = false;
   showSkeletonPages.value = false;
@@ -54,17 +54,17 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="mt-18 mb-10 flex flex-row gap-24">
+    <div class="mt-18 mb-10 flex flex-col xl:flex-row gap-x-24 gap-y-8 3xl:gap-28 xl:gap-20">
       <FilterSelector @active:update="updateTags" :active="activeTags"/>
       <div class="w-full h-full flex flex-col gap-10 mb-5">
         <template v-if="(mods?.mods.length ?? 0) > 0">
           <div class="flex flex-wrap w-full gap-y-8 justify-between content-start h-full">
             <transition-group name="fade" mode="out-in">
               <template v-if="showSkeleton">
-                <ModSmallSkeleton class="w-60 h-60" v-for="i in 2" :key="i"/>
+                <ModSmallSkeleton class="w-full h-60 3xl:h-68 3xl:w-132 2xl:w-112 xl:w-96" v-for="i in 6" :key="i"/>
               </template>
               <template v-else>
-                <ModSmallComponent class="w-124 h-60" v-for="i in mods?.mods" :key="i.id" :mod="i"/>
+                <ModSmallComponent class="w-full h-60 3xl:h-68 3xl:w-132 2xl:w-112 xl:w-96" v-for="i in mods?.mods" :key="i.id" :mod="i"/>
               </template>
             </transition-group>
           </div>

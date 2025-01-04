@@ -58,7 +58,7 @@ onMounted(async () => {
   <div class="mt-18 mb-10 flex flex-col gap-12">
     <div class="flex flex-col gap-5">
       <h1 class="uppercase text-3xl text-secondary font-light">Популярные Категории</h1>
-      <div class="flex flex-row gap-6 overflow-auto w-full relative">
+      <div class="hidden lg:flex flex-row gap-6 overflow-auto w-full relative">
         <ScrollButton
           :class="{
             'opacity-0': !categoriesScrollableToLeft
@@ -68,20 +68,33 @@ onMounted(async () => {
             'fade-bought': categoriesScrollableToLeft && categoriesScrollableToRight,
             'fade-left': categoriesScrollableToLeft && !categoriesScrollableToRight,
             'fade-right': categoriesScrollableToRight && !categoriesScrollableToLeft,
-          }" class="flex flex-row gap-6 overflow-auto overflow-x-hidden w-full">
-          <NuxtLink to="/mods"><PopularCategory class="min-w-132 max-w-132 h-72"/></NuxtLink>
-          <PopularCategory class="min-w-132 max-w-132 h-72"/>
-          <PopularCategory class="min-w-132 max-w-132 h-72"/>
+          }" class="flex flex-row gap-6 overflow-auto scrollbar-hide w-full">
+          <NuxtLink to="/mods">
+            <PopularCategory class="grid-elem"/>
+          </NuxtLink>
+          <PopularCategory class="grid-elem"/>
+          <PopularCategory class="grid-elem"/>
         </div>
         <ScrollButton
           :class="{
             'opacity-0': !categoriesScrollableToRight
           }" direction="right" @click="scrollRight('categories')" class="absolute right-0 z-10 scroll-button"/>
       </div>
+
+      <!-- Mobile -->
+      <div class="flex lg:hidden flex-row gap-6 w-full relative">
+        <div id="categories" class="flex flex-col gap-6 w-full">
+          <NuxtLink to="/mods">
+            <PopularCategory class="grid-elem"/>
+          </NuxtLink>
+          <PopularCategory class="grid-elem"/>
+          <PopularCategory class="grid-elem"/>
+        </div>
+      </div>
     </div>
     <div class="flex flex-col gap-5">
       <h1 class="uppercase text-3xl text-secondary font-light">Популярные Моды</h1>
-      <div class="flex flex-row gap-6 overflow-auto w-full relative">
+      <div class="hidden lg:flex flex-row gap-6 overflow-auto w-full relative">
         <ScrollButton
           :class="{
             'opacity-0': !modsScrollableToLeft
@@ -91,15 +104,24 @@ onMounted(async () => {
             'fade-bought': modsScrollableToLeft && modsScrollableToRight,
             'fade-left': modsScrollableToLeft && !modsScrollableToRight,
             'fade-right': modsScrollableToRight && !modsScrollableToLeft,
-          }" class="flex flex-row gap-6 overflow-auto w-full overflow-x-hidden">
-          <PopularMod class="min-w-132 max-w-132 h-72"/>
-          <PopularMod class="min-w-132 max-w-132 h-72"/>
-          <PopularMod class="min-w-132 max-w-132 h-72"/>
+          }" class="flex flex-row gap-6 overflow-auto w-full scrollbar-hide">
+          <PopularMod class="grid-elem"/>
+          <PopularMod class="grid-elem"/>
+          <PopularMod class="grid-elem"/>
         </div>
         <ScrollButton
           :class="{
             'opacity-0': !modsScrollableToRight
           }" direction="right" @click="scrollRight('mods')" class="absolute right-0 z-10 scroll-button"/>
+      </div>
+
+      <!-- Mobile -->
+      <div class="flex lg:hidden flex-row gap-6 w-full relative">
+        <div id="mods" class="flex flex-col gap-6 w-full">
+          <PopularMod class="grid-elem"/>
+          <PopularMod class="grid-elem"/>
+          <PopularMod class="grid-elem"/>
+        </div>
       </div>
     </div>
   </div>
@@ -107,6 +129,10 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 @use 'assets/css/global' as *;
+
+.grid-elem {
+  @apply lg:min-w-132 lg:max-w-132 lg:h-72 h-60 min-w-full max-w-full;
+}
 
 .scroll-button {
   top: 44%;

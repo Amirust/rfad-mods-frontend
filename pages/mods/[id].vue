@@ -45,7 +45,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mt-18 top-nav mb-10 flex flex-row gap-14 text-primary relative">
+  <div class="mt-18 top-nav mb-10 flex flex-col gap-24 gap-y-10 3xl:gap-28 text-primary relative xl:gap-20 xl:flex-row">
     <transition name="fade">
       <template v-if="!isLoading && mod">
         <div class="min-w-72 max-w-72 text-primary flex flex-col gap-5">
@@ -93,8 +93,8 @@ onMounted(async () => {
       <transition name="fade">
         <template v-if="!isLoading && mod">
           <div class="w-full h-full flex flex-col gap-6">
-            <div v-if="mod.images.length" class="flex flex-row gap-x-4">
-              <NuxtImg class="w-72 h-40 rounded-md" v-for="img in mod.images" :key="img" :src="img" placeholder />
+            <div v-if="mod.images.length" class="flex flex-col xl:flex-row gap-4">
+              <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md" v-for="img in mod.images" :key="img" :src="img" placeholder />
             </div>
             <div>
               <h3 class="text-2xl font-medium text-secondary">Описание</h3>
