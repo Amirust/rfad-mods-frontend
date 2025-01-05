@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { isBrowser } from '~/utils/isBrowser.util'
-import {useAuthStore} from '~/store/useAuthStore';
+import { useAuthStore } from '~/store/useAuthStore';
 
 const brand = 'RFAD SE'
 const title = `${brand} Mods`
@@ -45,8 +45,13 @@ const themeColor = computed(() => {
 
 onMounted(async () => {
   await useAuthStore().authenticateUser(false)
-  if (useAuthStore().getLastUpdate.getTime() + 1000 * 60 * 60 * 24 < new Date().getTime())
+
+  if (useAuthStore().authenticated && !(useAuthStore().getLastUpdate))
     await useAuthStore().authenticateUser(true)
+
+  if (useAuthStore().getLastUpdate!.getTime() + 1000 * 60 * 60 * 24 < new Date().getTime())
+    await useAuthStore().authenticateUser(true)
+
 })
 </script>
 

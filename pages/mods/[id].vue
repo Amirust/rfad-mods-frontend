@@ -58,13 +58,6 @@ onMounted(async () => {
             </div>
           </div>
           <div class="flex flex-col gap-1">
-            <h3 class="text-2xl font-medium text-secondary">Версия игры</h3>
-            <div class="flex flex-row gap-1.5 items-center">
-              <LucideHistory :size="20" :stroke-width="3"/>
-              <span class="text-lg font-normal">{{ mod.versions.join(',') }}</span>
-            </div>
-          </div>
-          <div class="flex flex-col gap-1">
             <h3 class="text-2xl font-medium text-secondary">Последнее обновление</h3>
             <div class="flex flex-row gap-1.5 items-center">
               <LucideClock :size="20" :stroke-width="3"/>

@@ -7,7 +7,7 @@ export interface AuthState {
   user: CachedUser | null
   authenticated: boolean
   token: string | null
-  lastUpdate: Date
+  lastUpdate?: Date
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', {
     user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null,
     token: localStorage.getItem('token') || null,
     authenticated: false,
-    lastUpdate: new Date(+(localStorage.getItem('lastUpdate') ?? Date.now()))
+    lastUpdate: localStorage.getItem('lastUpdate') ? new Date(+(localStorage.getItem('lastUpdate')!)) : null
   } as AuthState),
   actions: {
     setToken(token: string) {
@@ -34,7 +34,6 @@ export const useAuthStore = defineStore('auth', {
           this.authenticated = false
           this.dropValues(true)
         }
-        console.log('token', this.getToken, 'invalid', 'dropping values')
         this.dropValues()
       }
     },
@@ -53,6 +52,7 @@ export const useAuthStore = defineStore('auth', {
       const data = await useUsersApi().getUser('@me')
 
       this.user = data
+      localStorage.setItem('lastUpdate', new Date().getTime().toString())
       localStorage.setItem('user', JSON.stringify(data))
     }
   },
