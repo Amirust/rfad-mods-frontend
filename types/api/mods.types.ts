@@ -1,6 +1,5 @@
 import type { PublicPartialUser } from '~/types/api/users.types';
 import type { ModTags } from '~/types/mod-tags.enum';
-import type { VersionsEnum } from '~/types/api/core.types';
 
 export interface FindResult {
   totalPages: number;
@@ -20,7 +19,6 @@ export interface CreateMod {
   shortDescription: string
   description: string
   installGuide: string
-  versions: VersionsEnum[]
   tags: ModTags[]
   downloadLink: string
   additionalLinks: AdditionalLinkDTO[]

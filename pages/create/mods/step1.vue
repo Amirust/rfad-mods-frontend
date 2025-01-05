@@ -2,20 +2,50 @@
 
 import StageStepper from '~/components/create/StageStepper.vue';
 import CustomInput from '~/components/base/CustomInput.vue';
-import EnumSelector from '~/components/base/EnumSelector.vue';
-import { VersionsEnum } from '~/types/versions.enum';
 import TagsSelector from '~/components/base/TagsSelector.vue';
 import Button from '~/components/base/Button.vue';
+import type { ModTags } from '~/types/mod-tags.enum';
+import { useCreateModStore } from '~/store/useCreateModStore';
 
+const createModStore = useCreateModStore()
 const router = useRouter()
 
-const isButtonDisabled = computed(() => {
-  return true
+const isNameValid = ref(false)
+const isShortDescriptionValid = ref(false)
+const selectedTags = ref<ModTags[]>([])
+const isSelectedTagsValid = computed(() => selectedTags.value.length > 0)
+
+const modName = ref('')
+const modShortDescription = ref('')
+
+const isButtonActive = computed(() => {
+  return isNameValid.value && isShortDescriptionValid.value && isSelectedTagsValid.value
 })
 
 const go = () => {
-  if (isButtonDisabled.value) return
+  if (!isButtonActive.value) return
+
+  createModStore.setName(modName.value)
+  createModStore.setShortDescription(modShortDescription.value)
+  createModStore.setTags(selectedTags.value)
+
   router.push('/create/mods/step2')
+}
+
+const nameValidator = (value: string) => {
+  if (value.length < 3) return 'Название должно быть длиннее 5 символов'
+  if (value.length > 25) return 'Название должно быть короче 25 символов'
+
+  isNameValid.value = true
+  return null
+}
+
+const shortDescriptionValidator = (value: string) => {
+  if (value.length < 3) return 'Описание должно быть длиннее 5 символов'
+  if (value.length > 50) return 'Описание должно быть короче 50 символов'
+
+  isShortDescriptionValid.value = true
+  return null
 }
 </script>
 
@@ -43,7 +73,7 @@ const go = () => {
                 <h5 class="text-base leading-tight font-light text-secondary">Самое главное о вашем моде несколькими словами</h5>
               </div>
               <div class="w-full">
-                <CustomInput class="w-full" :length-limit="25" name="amogus" :validator="() => null" placeholder="Введите название..." />
+                <CustomInput name="modName" @update:value="value => modName = value" class="w-full" :length-limit="25" :validator="nameValidator" placeholder="Введите название..." />
               </div>
             </div>
             <div class="flex flex-row gap-20 w-full">
@@ -52,19 +82,7 @@ const go = () => {
                 <h5 class="text-base leading-tight font-light text-secondary">Завлеките людей этим описанием, оно отображается на странице со всеми модами</h5>
               </div>
               <div class="w-full">
-                <CustomInput class="w-full" :length-limit="50" name="amogus" :validator="() => null" placeholder="Введите краткое описание ..." />
-              </div>
-            </div>
-            <div class="flex flex-row gap-20 w-full">
-              <div class="flex flex-col max-w-60 w-full gap-1">
-                <h2 class="text-3xl font-light text-primary">Версия</h2>
-                <h5 class="text-base leading-tight font-light text-secondary">Выберите версию сборки, на которой мод работает</h5>
-              </div>
-              <div class="w-full">
-                <EnumSelector
-                  @update:value="console.log"
-                  :enum="VersionsEnum"
-                />
+                <CustomInput name="modShortDescription" @update:value="value => modShortDescription = value"  class="w-full" :length-limit="50" :validator="shortDescriptionValidator" placeholder="Введите краткое описание ..." />
               </div>
             </div>
             <div class="flex flex-row gap-20 w-full">
@@ -73,12 +91,12 @@ const go = () => {
                 <h5 class="text-base leading-tight font-light text-secondary">Сначала выберите категорию, остальные теги вы увидите после этого</h5>
               </div>
               <div class="w-full">
-                <TagsSelector />
+                <TagsSelector @update:value="value => selectedTags = value" />
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">
               <Button @click="router.back()">Назад</Button>
-              <Button :disabled="isButtonDisabled" @click="go">Далее</Button>
+              <Button :disabled="!isButtonActive" @click="go">Далее</Button>
             </div>
           </div>
         </div>

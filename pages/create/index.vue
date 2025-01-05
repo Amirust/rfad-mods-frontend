@@ -3,6 +3,20 @@
 import StageStepper from '~/components/create/StageStepper.vue';
 import PresetsCategory from '~/components/create/categories/PresetsCategory.vue';
 import ModsCategory from '~/components/create/categories/ModsCategory.vue';
+import { useCreateModStore } from '~/store/useCreateModStore';
+
+const router = useRouter()
+const useStore = useCreateModStore()
+
+const goToMods = () => {
+  useStore.setType('mod')
+  router.push('/create/mods/step1')
+}
+
+const goToPresets = () => {
+  useStore.setType('preset')
+  router.push('/create/preset/step1')
+}
 </script>
 
 <template>
@@ -23,10 +37,10 @@ import ModsCategory from '~/components/create/categories/ModsCategory.vue';
             <h3 class="text-3xl font-normal text-primary uppercase">Выберите Категорию</h3>
           </div>
           <div class="flex flex-row gap-7">
-            <NuxtLink to="/create/mods/step1">
+            <NuxtLink @click="goToMods" class="cursor-pointer">
               <ModsCategory class="w-100 h-60"/>
             </NuxtLink>
-            <NuxtLink  to="/create/preset/step1">
+            <NuxtLink @click="goToPresets" class="cursor-pointer">
               <PresetsCategory class="w-100 h-60"/>
             </NuxtLink>
           </div>
