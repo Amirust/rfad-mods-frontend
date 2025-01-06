@@ -14,19 +14,18 @@ export interface Mod extends CreateMod {
 }
 
 export interface CreateMod {
-  authorId: string
   name: string
   shortDescription: string
   description: string
   installGuide: string
   tags: ModTags[]
   downloadLink: string
-  additionalLinks: AdditionalLinkDTO[]
+  additionalLinks: AdditionalLink[]
   images: string[]
 }
 
 
-export interface AdditionalLinkDTO {
+export interface AdditionalLink {
   name: string
   url: string
 }

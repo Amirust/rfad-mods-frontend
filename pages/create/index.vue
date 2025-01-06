@@ -10,11 +10,15 @@ const useStore = useCreateModStore()
 
 const goToMods = () => {
   useStore.setType('mod')
+  useStore.isDropped = false
+
   router.push('/create/mods/step1')
 }
 
 const goToPresets = () => {
   useStore.setType('preset')
+  useStore.isDropped = false
+
   router.push('/create/preset/step1')
 }
 </script>

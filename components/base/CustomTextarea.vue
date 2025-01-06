@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col gap-1.5">
-    <input
+  <div class="flex flex-col gap-1.5 h-full">
+    <textarea
       class="input"
       :maxlength="lengthLimit"
       :class="{
@@ -8,19 +8,22 @@
         'border-secondary-25 focus:border-primary': !errorMessage,
       }"
       :id="name"
-      :type="type"
       :placeholder="placeholder"
-      v-model="model"
+      v-model="inputValue"
       @input="validate"
-      @blur="validate"
+      @blur="() => {
+        validate();
+        emit('update:focus', false);
+      }"
+      @focus="() => emit('update:focus', true)"
     />
     <div
       v-if="lengthLimit"
       :class="{
-        'reached': model.length >= lengthLimit,
+        'reached': inputValue.length >= lengthLimit,
       }"
       class="flex w-full justify-end text-secondary text-xs font-normal">
-      {{ model.length }} / {{ lengthLimit }}
+      {{ inputValue.length }} / {{ lengthLimit }}
     </div>
   </div>
 </template>
@@ -39,29 +42,29 @@ interface Props {
 
 interface Emit {
   (event: 'update:value', value: string): void;
+  (event: 'update:focus', value: boolean): void;
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emit>();
 
-const model = defineModel<string>({
+const inputValue = defineModel<string>({
   required: true
 })
-
 const errorMessage = ref('');
 
-watch(model, (newValue) => {
+watch(inputValue, (newValue) => {
   emit('update:value', newValue);
 });
 
 const validate = () => {
   if (!props.validator) return;
-  if (model.value.length > (props.lengthLimit || Infinity)) {
+  if (inputValue.value.length > (props.lengthLimit || Infinity)) {
     setError('Превышен лимит символов');
     return;
   }
 
-  const error = props.validator(model.value);
+  const error = props.validator(inputValue.value);
   errorMessage.value = error ? error : '';
 }
 
@@ -72,7 +75,7 @@ function setError(message: string) {
 
 <style scoped lang="scss">
 .input {
-  @apply text-lg font-normal bg-block border rounded-md px-2.5 outline-none min-h-10 min-w-full text-primary transition-colors placeholder:text-secondaryHalf placeholder:font-normal
+  @apply text-lg font-normal bg-block border rounded-md px-2.5 py-1.5 outline-none min-h-10 min-w-full h-full text-primary transition-colors placeholder:text-secondaryHalf placeholder:font-normal
 }
 
 .error {

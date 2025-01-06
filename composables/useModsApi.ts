@@ -3,7 +3,7 @@ import { useApiFetch } from '~/composables/useApiFetch';
 import type { ApiResponse } from '~/types/api/core.types';
 import { Endpoints } from '~/types/api/endpoints';
 import { resolveError } from '~/composables/resolveError';
-import type { FindResult, Mod } from '~/types/api/mods.types';
+import type { CreateMod, FindResult, Mod } from '~/types/api/mods.types';
 
 export const useModsApi = () => {
   const findOne = async (id: string) => {
@@ -24,8 +24,21 @@ export const useModsApi = () => {
     else throw new Error('No data')
   }
 
+  const createMod = async (body: CreateMod) => {
+    const { error, data } = await useApiFetch<ApiResponse<Mod>>(Endpoints.createMod(), {
+      method: 'POST',
+      body: JSON.stringify(body)
+    })
+
+    if (error.value) resolveError(error.value.data)
+
+    if (data.value) return data.value.result
+    else throw new Error
+  }
+
   return {
     findOne,
-    findAll
+    findAll,
+    createMod
   }
 }

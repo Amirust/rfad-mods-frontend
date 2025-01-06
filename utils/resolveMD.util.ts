@@ -2,8 +2,7 @@ const config = { boldClass: 'text-primary font-normal' };
 
 export default function transformMarkdown(markdown: string): string {
   // XSS protection
-  markdown = markdown.replace(/<style>.*<\/style>/g, '');
-  markdown = markdown.replace(/<script>.*<\/script>/g, '');
+  markdown = markdown.replace(/<[^>]*>.*?<\/[^>]*>/gs, '');
 
   const lines = markdown.split('\n');
   const numberedListRegex = /^(\d+)\.\s+(.*)$/;

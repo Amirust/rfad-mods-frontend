@@ -10,7 +10,8 @@ export interface UseCreateModStoreInterface {
   tags: ModTags[]
   downloadLink: string
   additionalLinks: {name: string, url: string}[]
-  images: string[]
+  images: File[],
+  isDropped: boolean
 }
 
 export const useCreateModStore = defineStore('createMod', {
@@ -23,7 +24,8 @@ export const useCreateModStore = defineStore('createMod', {
     tags: [],
     downloadLink: '',
     additionalLinks: [],
-    images: []
+    images: [],
+    isDropped: true
   }) as UseCreateModStoreInterface,
   actions: {
     setType(type: 'mod' | 'preset') {
@@ -50,8 +52,20 @@ export const useCreateModStore = defineStore('createMod', {
     setAdditionalLinks(additionalLinks: {name: string, url: string}[]) {
       this.additionalLinks = additionalLinks
     },
-    setImages(images: string[]) {
+    setImages(images: File[]) {
       this.images = images
+    },
+    drop() {
+      this.isDropped = true
+      this.type = null
+      this.name = ''
+      this.shortDescription = ''
+      this.description = ''
+      this.installGuide = ''
+      this.tags = []
+      this.downloadLink = ''
+      this.additionalLinks = []
+      this.images = []
     }
   },
   getters: {
@@ -64,6 +78,7 @@ export const useCreateModStore = defineStore('createMod', {
     getDownloadLink: (state) => state.downloadLink,
     getAdditionalLinks: (state) => state.additionalLinks,
     getImages: (state) => state.images,
+    getIsDropped: (state) => state.isDropped,
     getMod: (state) => {
       return {
         name: state.name,

@@ -29,7 +29,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: 'http://localhost:7000',
-      discordOAuthUrl: '' // TODO: Remove before push
+      discordOAuthUrl: '', // TODO: Remove before push
+      cdnUrl: 'https://rfad-images-test.rinisle.uk/images/' // https://images.example.com/images/ОСТАВИТЬ_ПУСТЫМ, сюда будет писаться хеш
     }
   },
 

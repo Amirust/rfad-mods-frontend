@@ -1,4 +1,4 @@
-import type {ModTags} from '~/types/mod-tags.enum';
+import type { ModTags } from '~/types/mod-tags.enum';
 
 export class Endpoints {
   // Auth
@@ -22,5 +22,22 @@ export class Endpoints {
 
   static getMods(tags: ModTags[], page: number = 1, limit: number = 6): string {
     return `/mods?tags=${tags.join(',')}&page=${page}&limit=${limit}`
+  }
+
+  static createMod(): string {
+    return '/mods'
+  }
+
+  // Files
+  static uploadFile(): string {
+    return '/files'
+  }
+
+  static deleteFile(hash: string): string {
+    return `/files/${hash}`
+  }
+
+  static getQuota(): string {
+    return '/files/quota'
   }
 }

@@ -10,6 +10,7 @@ export enum ErrorCode {
   // User
   UserError = 30000,
   UserNotFound,
+  UserFilesLimitReached,
 
   // Mods
   ModError = 40000,
@@ -25,4 +26,8 @@ export enum ErrorCode {
   InvalidInput = 60000,
   FunctionalDisabled,
   UserHasNoBoostyAccess,
+
+  // Files
+  FileError = 70000,
+  FileNotFound,
 }
