@@ -6,6 +6,7 @@ import TagsSelector from '~/components/base/TagsSelector.vue';
 import Button from '~/components/base/Button.vue';
 import type { ModTags } from '~/types/mod-tags.enum';
 import { useCreateModStore } from '~/store/useCreateModStore';
+import { Limits } from '~/types/limits.enum';
 
 const createModStore = useCreateModStore()
 const router = useRouter()
@@ -33,20 +34,30 @@ const go = () => {
 }
 
 const nameValidator = (value: string) => {
-  if (value.length < 3) return 'Название должно быть длиннее 5 символов'
-  if (value.length > 25) return 'Название должно быть короче 25 символов'
+  if (value.length < 3) return 'Название должно быть длиннее 3 символов'
+  if (value.length > 25) return `Название должно быть короче ${Limits.ModNameMaxLength} символов`
 
   isNameValid.value = true
   return null
 }
 
 const shortDescriptionValidator = (value: string) => {
-  if (value.length < 3) return 'Описание должно быть длиннее 5 символов'
-  if (value.length > 50) return 'Описание должно быть короче 50 символов'
+  if (value.length < 3) return 'Описание должно быть длиннее 3 символов'
+  if (value.length > 50) return `Описание должно быть короче ${Limits.ModShortDescriptionMaxLength} символов`
 
   isShortDescriptionValid.value = true
   return null
 }
+
+onMounted(() => {
+  if (useCreateModStore().isDropped) return router.push('/create')
+
+  if (createModStore.name) modName.value = createModStore.getName
+  if (createModStore.shortDescription) modShortDescription.value = createModStore.getShortDescription
+
+  nameValidator(modName.value)
+  shortDescriptionValidator(modShortDescription.value)
+})
 </script>
 
 <template>
@@ -73,7 +84,7 @@ const shortDescriptionValidator = (value: string) => {
                 <h5 class="text-base leading-tight font-light text-secondary">Самое главное о вашем моде несколькими словами</h5>
               </div>
               <div class="w-full">
-                <CustomInput name="modName" @update:value="value => modName = value" class="w-full" :length-limit="25" :validator="nameValidator" placeholder="Введите название..." />
+                <CustomInput name="modName" v-model="modName" class="w-full" :length-limit="Limits.ModNameMaxLength" :validator="nameValidator" placeholder="Введите название..." />
               </div>
             </div>
             <div class="flex flex-row gap-20 w-full">
@@ -82,7 +93,7 @@ const shortDescriptionValidator = (value: string) => {
                 <h5 class="text-base leading-tight font-light text-secondary">Завлеките людей этим описанием, оно отображается на странице со всеми модами</h5>
               </div>
               <div class="w-full">
-                <CustomInput name="modShortDescription" @update:value="value => modShortDescription = value"  class="w-full" :length-limit="50" :validator="shortDescriptionValidator" placeholder="Введите краткое описание ..." />
+                <CustomInput name="modShortDescription" v-model="modShortDescription"  class="w-full" :length-limit="Limits.ModShortDescriptionMaxLength" :validator="shortDescriptionValidator" placeholder="Введите краткое описание ..." />
               </div>
             </div>
             <div class="flex flex-row gap-20 w-full">

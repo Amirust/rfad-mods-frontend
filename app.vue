@@ -46,7 +46,7 @@ const themeColor = computed(() => {
 onMounted(async () => {
   await useAuthStore().authenticateUser(false)
 
-  if (useAuthStore().authenticated && !(useAuthStore().getLastUpdate))
+  if (useAuthStore().authenticated && (!(useAuthStore().getLastUpdate) || !useAuthStore().getUser))
     await useAuthStore().authenticateUser(true)
 
   if (useAuthStore().getLastUpdate!.getTime() + 1000 * 60 * 60 * 24 < new Date().getTime())

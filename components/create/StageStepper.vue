@@ -43,7 +43,7 @@ const labels = [
 
 .innactive-step {
   div {
-    @apply bg-secondary-25 border-2 border-primary text-secondary;
+    @apply bg-secondary-25 border-2 border-secondary text-secondary;
   }
 
   span {
