@@ -7,5 +7,8 @@ export enum Limits {
   ModDescriptionMaxLength = 2000,
   ModInstallGuideMinLength = 25,
   ModInstallGuideMaxLength = 1000,
+  MinTagsPerMod = 1,
+  MaxTagsPerMod = 5,
+  MaxTagsPerPreset = 10,
   MaxImagesPerMod = 6,
 }

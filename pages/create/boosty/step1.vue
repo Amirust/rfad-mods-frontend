@@ -5,22 +5,26 @@ import CustomInput from '~/components/base/CustomInput.vue';
 import TagsSelector from '~/components/base/ModsTagsSelector.vue';
 import Button from '~/components/base/Button.vue';
 import type { ModTags } from '~/types/mod-tags.enum';
-import { useCreateModStore } from '~/store/useCreateModStore';
 import { Limits } from '~/types/limits.enum';
+import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
+import BoostyTierSelector from '~/components/base/BoostyTierSelector.vue';
+import { BoostyTierEnum } from '~/types/boosty-tier.enum';
 
-const createModStore = useCreateModStore()
+const createModStore = useCreateBoostyModStore()
 const router = useRouter()
 
 const isNameValid = ref(false)
 const isShortDescriptionValid = ref(false)
 const selectedTags = ref<ModTags[]>([])
 const isSelectedTagsValid = computed(() => selectedTags.value.length > 0)
+const selectedTier = ref<BoostyTierEnum[]>([])
+const isSelectedTierValid = computed(() => selectedTier.value.length > 0)
 
 const modName = ref('')
 const modShortDescription = ref('')
 
 const isButtonActive = computed(() => {
-  return isNameValid.value && isShortDescriptionValid.value && isSelectedTagsValid.value
+  return isNameValid.value && isShortDescriptionValid.value && isSelectedTagsValid.value && isSelectedTierValid.value
 })
 
 const go = () => {
@@ -29,8 +33,9 @@ const go = () => {
   createModStore.setName(modName.value)
   createModStore.setShortDescription(modShortDescription.value)
   createModStore.setTags(selectedTags.value)
+  createModStore.setMinimalTier(selectedTier.value[0])
 
-  router.push('/create/mods/step2')
+  router.push('/create/boosty/step2')
 }
 
 const nameValidator = (value: string) => {
@@ -49,8 +54,8 @@ const shortDescriptionValidator = (value: string) => {
   return null
 }
 
-onMounted(() => {
-  if (useCreateModStore().isDropped) return router.push('/create')
+onMounted(async () => {
+  if (useCreateBoostyModStore().isDropped || !(await useAuthApi().isModerator())) return router.push('/create')
 
   if (createModStore.name) modName.value = createModStore.getName
   if (createModStore.shortDescription) modShortDescription.value = createModStore.getShortDescription
@@ -103,6 +108,15 @@ onMounted(() => {
               </div>
               <div class="w-full">
                 <TagsSelector @update:value="value => selectedTags = value" />
+              </div>
+            </div>
+            <div class="flex flex-row gap-20 w-full">
+              <div class="flex flex-col max-w-60 w-full gap-1">
+                <h2 class="text-3xl font-light text-primary">Тир</h2>
+                <h5 class="text-base leading-tight font-light text-secondary">Выберите какой тир нужен человеку, чтобы скачать этот мод</h5>
+              </div>
+              <div class="w-full">
+                <BoostyTierSelector @update:value="value => selectedTier = value" />
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">

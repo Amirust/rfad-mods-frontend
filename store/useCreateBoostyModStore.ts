@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import type { ModTags } from '~/types/mod-tags.enum';
 import type { PresetTags } from '~/types/preset-tags.enum';
+import { BoostyTierEnum } from '~/types/boosty-tier.enum';
 
 export interface UseCreateModStoreInterface {
-  type: 'mod' | 'preset' | null
   name: string
   shortDescription: string
   description: string
@@ -12,12 +12,12 @@ export interface UseCreateModStoreInterface {
   downloadLink: string
   additionalLinks: {name: string, url: string}[]
   images: File[],
-  isDropped: boolean
+  minimalTier: BoostyTierEnum | null,
+  isDropped: boolean,
 }
 
-export const useCreateModStore = defineStore('createMod', {
+export const useCreateBoostyModStore = defineStore('createBoostyMod', {
   state: () => ({
-    type: null,
     name: '',
     shortDescription: '',
     description: '',
@@ -26,12 +26,10 @@ export const useCreateModStore = defineStore('createMod', {
     downloadLink: '',
     additionalLinks: [],
     images: [],
+    minimalTier: null,
     isDropped: true
   }) as UseCreateModStoreInterface,
   actions: {
-    setType(type: 'mod' | 'preset') {
-      this.type = type
-    },
     setName(name: string) {
       this.name = name
     },
@@ -56,9 +54,11 @@ export const useCreateModStore = defineStore('createMod', {
     setImages(images: File[]) {
       this.images = images
     },
+    setMinimalTier(minimalTier: BoostyTierEnum) {
+      this.minimalTier = minimalTier
+    },
     drop() {
       this.isDropped = true
-      this.type = null
       this.name = ''
       this.shortDescription = ''
       this.description = ''
@@ -67,10 +67,10 @@ export const useCreateModStore = defineStore('createMod', {
       this.downloadLink = ''
       this.additionalLinks = []
       this.images = []
+      this.minimalTier = null
     }
   },
   getters: {
-    getType: (state) => state.type,
     getName: (state) => state.name,
     getShortDescription: (state) => state.shortDescription,
     getDescription: (state) => state.description,
@@ -79,6 +79,7 @@ export const useCreateModStore = defineStore('createMod', {
     getDownloadLink: (state) => state.downloadLink,
     getAdditionalLinks: (state) => state.additionalLinks,
     getImages: (state) => state.images,
+    getMinimalTier: (state) => state.minimalTier,
     getIsDropped: (state) => state.isDropped,
     getMod: (state) => {
       return {

@@ -19,7 +19,7 @@ const toggleCollapsible = () => {
       <NuxtLink to="/" class="text-primary text-3xl font-medium min-w-fit hover:text-secondary transition-colors">RFAD SE</NuxtLink>
       <div class="flex flex-row w-full items-center justify-end gap-12">
         <NuxtLink to="/mods" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Опциональные</NuxtLink>
-        <NuxtLink class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Пресеты</NuxtLink>
+        <NuxtLink to="/presets" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Пресеты</NuxtLink>
         <NuxtLink class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Бусти</NuxtLink>
       </div>
       <div class="ml-6 text-secondary flex flex-row items-center gap-6 min-w-fit">

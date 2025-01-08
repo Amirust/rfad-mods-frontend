@@ -4,9 +4,13 @@ import StageStepper from '~/components/create/StageStepper.vue';
 import PresetsCategory from '~/components/create/categories/PresetsCategory.vue';
 import ModsCategory from '~/components/create/categories/ModsCategory.vue';
 import { useCreateModStore } from '~/store/useCreateModStore';
+import BoostyCategory from '~/components/create/categories/BoostyCategory.vue';
+import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
 
 const router = useRouter()
 const useStore = useCreateModStore()
+
+const userIsModerator = ref(false)
 
 const goToMods = () => {
   useStore.setType('mod')
@@ -21,6 +25,16 @@ const goToPresets = () => {
 
   router.push('/create/preset/step1')
 }
+const goToBoosty = () => {
+  useCreateBoostyModStore().isDropped = false
+
+  router.push('/create/boosty/step1')
+}
+
+
+onMounted(async () => {
+  userIsModerator.value = await useAuthApi().isModerator()
+})
 </script>
 
 <template>
@@ -40,12 +54,15 @@ const goToPresets = () => {
             <h4 class="text-xl font-light text-secondary">ШАГ 1</h4>
             <h3 class="text-3xl font-normal text-primary uppercase">Выберите Категорию</h3>
           </div>
-          <div class="flex flex-row gap-7">
+          <div class="flex flex-row flex-wrap gap-7">
             <NuxtLink @click="goToMods" class="cursor-pointer">
               <ModsCategory class="w-100 h-60"/>
             </NuxtLink>
             <NuxtLink @click="goToPresets" class="cursor-pointer">
               <PresetsCategory class="w-100 h-60"/>
+            </NuxtLink>
+            <NuxtLink v-if="userIsModerator" @click="goToBoosty" class="cursor-pointer">
+              <BoostyCategory class="w-100 h-60"/>
             </NuxtLink>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import type { ModTags } from '~/types/mod-tags.enum';
+import type { PresetTags } from '~/types/preset-tags.enum';
 
 export class Endpoints {
   // Auth
@@ -8,6 +9,14 @@ export class Endpoints {
 
   static validateToken(): string {
     return '/auth/verify'
+  }
+
+  static validateBoosty(): string {
+    return '/auth/boosty'
+  }
+
+  static isModerator(): string {
+    return '/auth/guard'
   }
 
   // Users
@@ -26,6 +35,60 @@ export class Endpoints {
 
   static createMod(): string {
     return '/mods'
+  }
+
+  static modifyMod(id: string): string {
+    return `/mods/${id}`
+  }
+
+  static deleteMod(id: string): string {
+    return `/mods/${id}`
+  }
+
+  // Presets
+  static getPreset(id: string): string {
+    return `/presets/${id}`
+  }
+
+  static getPresets(tags: PresetTags[], page: number = 1, limit: number = 6): string {
+    return `/presets?tags=${tags.join(',')}&page=${page}&limit=${limit}`
+  }
+
+  static createPreset(): string {
+    return '/presets'
+  }
+
+  static modifyPreset(id: string): string {
+    return `/presets/${id}`
+  }
+
+  static deletePreset(id: string): string {
+    return `/presets/${id}`
+  }
+
+  // Boosty
+  static getBoostyMod(id: string): string {
+    return `/boosty/${id}`
+  }
+
+  static getBoostyMods(tags: ModTags[], page: number = 1, limit: number = 6): string {
+    return `/boosty?tags=${tags.join(',')}&page=${page}&limit=${limit}`
+  }
+
+  static downloadBoostyMod(id: string): string {
+    return `/boosty/${id}/download`
+  }
+
+  static createBoostyMod(): string {
+    return '/boosty'
+  }
+
+  static modifyBoostyMod(id: string): string {
+    return `/boosty/${id}`
+  }
+
+  static deleteBoostyMod(id: string): string {
+    return `/boosty/${id}`
   }
 
   // Files

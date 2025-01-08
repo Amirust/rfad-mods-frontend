@@ -30,7 +30,8 @@ export default defineNuxtConfig({
     public: {
       apiUrl: 'http://localhost:7000',
       discordOAuthUrl: '', // TODO: Remove before push
-      cdnUrl: 'https://rfad-images-test.rinisle.uk/images/' // https://images.example.com/images/ОСТАВИТЬ_ПУСТЫМ, сюда будет писаться хеш
+      cdnUrl: 'https://rfad-images-test.rinisle.uk/images/', // https://images.example.com/images/ОСТАВИТЬ_ПУСТЫМ, сюда будет писаться хеш
+      boostyUrl: 'https://boosty.to/skyrim_rfad_chicken'
     }
   },
 

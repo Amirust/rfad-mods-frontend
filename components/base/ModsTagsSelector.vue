@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { ModTagList } from 'assets/manifest/mod.tags';
+import { ModTagList } from '~/locale/mod.tags';
 
 const emit = defineEmits<{
   (e: 'update:value', value: number[]): void;
