@@ -72,7 +72,9 @@ onMounted(async () => {
           <NuxtLink to="/mods">
             <PopularCategory class="grid-elem"/>
           </NuxtLink>
-          <PopularCategory class="grid-elem"/>
+          <NuxtLink to="/presets">
+            <PopularCategory class="grid-elem"/>
+          </NuxtLink>
           <PopularCategory class="grid-elem"/>
         </div>
         <ScrollButton

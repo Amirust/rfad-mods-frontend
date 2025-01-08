@@ -4,12 +4,12 @@ export interface ModTagsCategory {
   category: string;
   doNotHide?: boolean;
   values: ModTag[];
+  parent?: ModTags;
 }
 
 export interface ModTag {
   value: ModTags;
   label: string;
-  parent?: ModTags;
 }
 
 export const ModTagList = [

@@ -6,10 +6,9 @@ import Button from '~/components/base/Button.vue';
 import { useCreateModStore } from '~/store/useCreateModStore';
 import { Limits } from '~/types/limits.enum';
 import type { AdditionalLink } from '~/types/api/mods.types';
-import { useModsApi } from '~/composables/useModsApi';
 import resolveCDNImage from '~/utils/resolveCDNImage';
 import { useAuthStore } from '~/store/useAuthStore';
-import type { ModTags } from '~/types/mod-tags.enum';
+import type { PresetTags } from '~/types/preset-tags.enum';
 
 const createModStore = useCreateModStore()
 const router = useRouter()
@@ -41,15 +40,15 @@ const go = async () => {
     images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
   }
 
-  const data = await useModsApi().createMod({
+  const data = await usePresetsApi().createPreset({
     ...createModStore.getMod,
-    tags: createModStore.getTags as ModTags[],
+    tags: createModStore.getTags as PresetTags[],
     images
   })
 
   useCreateModStore().drop()
 
-  await router.push(`/mods/${data.id}`)
+  await router.push(`/presets/${data.id}`)
 }
 
 const linkValidator = (value: string) => {

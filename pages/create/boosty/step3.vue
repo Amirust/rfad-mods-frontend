@@ -3,15 +3,14 @@
 import StageStepper from '~/components/create/StageStepper.vue';
 import CustomInput from '~/components/base/CustomInput.vue';
 import Button from '~/components/base/Button.vue';
-import { useCreateModStore } from '~/store/useCreateModStore';
 import { Limits } from '~/types/limits.enum';
 import type { AdditionalLink } from '~/types/api/mods.types';
-import { useModsApi } from '~/composables/useModsApi';
 import resolveCDNImage from '~/utils/resolveCDNImage';
 import { useAuthStore } from '~/store/useAuthStore';
 import type { ModTags } from '~/types/mod-tags.enum';
+import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
 
-const createModStore = useCreateModStore()
+const createModStore = useCreateBoostyModStore()
 const router = useRouter()
 
 const downloadLink = ref('')
@@ -41,15 +40,16 @@ const go = async () => {
     images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
   }
 
-  const data = await useModsApi().createMod({
+  const data = await useBoostyApi().createBoostyMod({
     ...createModStore.getMod,
     tags: createModStore.getTags as ModTags[],
-    images
+    images,
+    requiredTier: createModStore.getMinimalTier!
   })
 
-  useCreateModStore().drop()
+  useCreateBoostyModStore().drop()
 
-  await router.push(`/mods/${data.id}`)
+  await router.push(`/boosty/${data.id}`)
 }
 
 const linkValidator = (value: string) => {
@@ -67,8 +67,8 @@ const nameValidator = (value: string) => {
   return null
 }
 
-onMounted(() => {
-  if (useCreateModStore().isDropped) return router.push('/create')
+onMounted(async () => {
+  if (useCreateBoostyModStore().isDropped || !(await useAuthApi().isModerator())) return router.push('/create')
 
   if (createModStore.downloadLink) downloadLink.value = createModStore.getDownloadLink
   if (createModStore.additionalLinks) links.value = createModStore.getAdditionalLinks
@@ -135,7 +135,7 @@ onMounted(() => {
               <Button :disabled="links.length >= 3" class="min-w-fit" @click="links = [...links, { url: '', name: '' }]">Добавить ссылку</Button>
               <div class="w-full min-w-fit flex flex-row justify-end gap-7">
                 <NuxtLink
-                  to="/create/mods/step2">
+                  to="/create/boosty/step2">
                   <Button>Назад</Button>
                 </NuxtLink>
                 <Button class="min-w-fit flex flex-row gap-2 items-center" :disabled="!isButtonActive" @click="go">
