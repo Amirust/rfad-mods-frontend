@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useModsApi } from '~/composables/useModsApi';
 import type { Mod } from '~/types/api/mods.types';
 import resolveModTagsUtil from '../../utils/resolveModTags.util';
 import ModTag from '~/components/base/ModTag.vue';
@@ -25,7 +24,7 @@ const loadMod = async () => {
   isLoading.value = true;
 
   try {
-    mod.value = await useModsApi().findOne(id);
+    mod.value = await useBoostyApi().findOne(id);
   } catch (e: any) {
     console.log(e.errorCode);
     if (e?.errorCode === ErrorCode.ModNotFound) {

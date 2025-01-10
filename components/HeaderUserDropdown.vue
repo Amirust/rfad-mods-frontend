@@ -7,6 +7,10 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
+const props = defineProps<{
+  userId: string
+}>()
+
 const closeDropdown = (event: MouseEvent) => {
   if (!(event.target as HTMLElement).closest('.dropdown')) {
     isOpen.value = false;
@@ -30,7 +34,7 @@ onBeforeUnmount(() => {
     </div>
     <transition name="dropdown">
       <div v-if="isOpen" class="dropdown-menu absolute right-0 bg-block border-2 border-secondary-25 rounded-md mt-2 py-2.5 px-3 flex flex-col gap-2">
-        <NuxtLink @click="toggleDropdown">
+        <NuxtLink :to="`/users/${props.userId}`" @click="toggleDropdown">
           <div class="dropdown-menu--element">
             <LucideUser :stroke-width="2" class="w-5 h-5"/>
             Профиль

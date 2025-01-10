@@ -20,14 +20,14 @@ const toggleCollapsible = () => {
       <div class="flex flex-row w-full items-center justify-end gap-12">
         <NuxtLink to="/mods" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Опциональные</NuxtLink>
         <NuxtLink to="/presets" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Пресеты</NuxtLink>
-        <NuxtLink class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Бусти</NuxtLink>
+        <NuxtLink to="/boosty" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Бусти</NuxtLink>
       </div>
       <div class="ml-6 text-secondary flex flex-row items-center gap-6 min-w-fit">
         <div class="line"/>
         <div class="relative">
           <transition name="fade">
             <template v-if="useAuthStore().authenticated && user">
-              <HeaderUserDropdown>
+              <HeaderUserDropdown :user-id="user.id">
                 <template #trigger>
                   <div class="flex flex-row gap-2 items-center">
                     <NuxtImg

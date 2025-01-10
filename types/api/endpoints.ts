@@ -24,6 +24,10 @@ export class Endpoints {
     return `/users/${id}`
   }
 
+  static getUserFull(id: string): string {
+    return `/users/${id}/full`
+  }
+
   // Mods
   static getMod(id: string): string {
     return `/mods/${id}`

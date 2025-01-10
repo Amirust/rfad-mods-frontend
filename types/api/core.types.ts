@@ -1,4 +1,4 @@
-import type {ErrorCode} from '~/types/api/ErrorCode.enum';
+import type { ErrorCode } from '~/types/api/ErrorCode.enum';
 
 
 export interface OkStatus {
