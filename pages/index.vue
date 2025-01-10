@@ -70,12 +70,29 @@ onMounted(async () => {
             'fade-right': categoriesScrollableToRight && !categoriesScrollableToLeft,
           }" class="flex flex-row gap-6 overflow-auto scrollbar-hide w-full">
           <NuxtLink to="/mods">
-            <PopularCategory class="grid-elem"/>
+            <PopularCategory
+              title="ОПЦИОНАЛЬНЫЕ"
+              description="Моды созданные разработчиками или сообществом но которые не вошли в основную сборку"
+              image="zodiac-screen.webp"
+              class="grid-elem"
+            />
           </NuxtLink>
           <NuxtLink to="/presets">
-            <PopularCategory class="grid-elem"/>
+            <PopularCategory
+              title="ПРЕСЕТЫ"
+              description="Хотите модельную внешность у своего персонажа, но не умеете её создавать? Умельцы уже решили эту проблему!"
+              image="zodiac-screen.webp"
+              class="grid-elem"
+            />
           </NuxtLink>
-          <PopularCategory class="grid-elem"/>
+          <NuxtLink to="/boosty">
+            <PopularCategory
+              title="Бусти"
+              description="Эксклюзивные моды, которые доступны только подписчикам Бусти. Здесь вы сможете найти совершенно новые моды для сборки"
+              image="zodiac-screen.webp"
+              class="grid-elem"
+            />
+          </NuxtLink>
         </div>
         <ScrollButton
           :class="{
@@ -87,10 +104,29 @@ onMounted(async () => {
       <div class="flex lg:hidden flex-row gap-6 w-full relative">
         <div id="categories" class="flex flex-col gap-6 w-full">
           <NuxtLink to="/mods">
-            <PopularCategory class="grid-elem"/>
+            <PopularCategory
+              title="ОПЦИОНАЛЬНЫЕ"
+              description="Моды созданные разработчиками или сообществом но которые не вошли в основную сборку"
+              image="zodiac-screen.webp"
+              class="grid-elem"
+            />
           </NuxtLink>
-          <PopularCategory class="grid-elem"/>
-          <PopularCategory class="grid-elem"/>
+          <NuxtLink to="/presets">
+            <PopularCategory
+              title="ПРЕСЕТЫ"
+              description="Хотите модельную внешность у своего персонажа, но не умеете её создавать? Умельцы уже решили эту проблему!"
+              image="zodiac-screen.webp"
+              class="grid-elem"
+            />
+          </NuxtLink>
+          <NuxtLink to="/boosty">
+            <PopularCategory
+              title="Бусти"
+              description="Эксклюзивные моды, которые доступны только подписчикам Бусти. Здесь вы сможете найти совершенно новые моды для сборки"
+              image="zodiac-screen.webp"
+              class="grid-elem"
+            />
+          </NuxtLink>
         </div>
       </div>
     </div>
