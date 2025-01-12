@@ -2,6 +2,9 @@
 import { onMounted, ref } from 'vue';
 import PopularCategory from '~/components/index/PopularCategory.vue';
 import PopularMod from '~/components/index/PopularMod.vue';
+import { usePopularModsApi } from '~/composables/usePopularModsApi';
+
+const popularMods = ref<{ modId: string, type: 'mod' | 'preset' }[]>([])
 
 const categoriesScrollableToRight = ref(true);
 const categoriesScrollableToLeft = ref(false);
@@ -40,16 +43,20 @@ const observeScrollability = (id: string) => {
     });
   }, { root: element, threshold: 0.9 });
 
-  if (element.firstElementChild) {
+  if (element.firstElementChild)
     observer.observe(element.firstElementChild);
-  }
-  if (element.lastElementChild) {
+
+  if (element.lastElementChild)
     observer.observe(element.lastElementChild);
-  }
+
 };
 
 onMounted(async () => {
   observeScrollability('categories');
+
+  popularMods.value = await usePopularModsApi().getPopular()
+
+  await waitUtil(50);
   observeScrollability('mods');
 });
 </script>
@@ -142,10 +149,8 @@ onMounted(async () => {
             'fade-bought': modsScrollableToLeft && modsScrollableToRight,
             'fade-left': modsScrollableToLeft && !modsScrollableToRight,
             'fade-right': modsScrollableToRight && !modsScrollableToLeft,
-          }" class="flex flex-row gap-6 overflow-auto w-full scrollbar-hide">
-          <PopularMod class="grid-elem"/>
-          <PopularMod class="grid-elem"/>
-          <PopularMod class="grid-elem"/>
+          }" class="flex flex-row gap-6 overflow-auto scrollbar-hide w-full">
+          <PopularMod v-for="mod in popularMods" :id="mod.modId" :type="mod.type" :key="mod.modId" class="grid-elem"/>
         </div>
         <ScrollButton
           :class="{
@@ -156,9 +161,7 @@ onMounted(async () => {
       <!-- Mobile -->
       <div class="flex lg:hidden flex-row gap-6 w-full relative">
         <div id="mods" class="flex flex-col gap-6 w-full">
-          <PopularMod class="grid-elem"/>
-          <PopularMod class="grid-elem"/>
-          <PopularMod class="grid-elem"/>
+          <PopularMod v-for="mod in popularMods" :id="mod.modId" :type="mod.type" :key="mod.modId" class="grid-elem"/>
         </div>
       </div>
     </div>

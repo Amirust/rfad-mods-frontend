@@ -109,7 +109,7 @@ onMounted(async () => {
               <div v-html="resolveMDUtil(preset.installGuide)" class="text-xl font-light"></div>
             </div>
             <div class="flex flex-row gap-x-6">
-              <a :href="resolveDownloadModUrl(preset.id)" target="_blank">
+              <a :href="resolveDownloadModUrl(preset.id, 'presets')" target="_blank">
                 <Button>Скачать</Button>
               </a>
               <NuxtLink v-for="m in preset.additionalLinks" :to="m.url" target="_blank">

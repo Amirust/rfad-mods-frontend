@@ -1,3 +1,3 @@
-export default function resolveDownloadModUrl(modId: string): string {
-  return `${useRuntimeConfig().public.apiUrl}/mods/${modId}/download`
+export default function resolveDownloadModUrl(modId: string, type: 'mods' | 'presets' = 'mods'): string {
+  return `${useRuntimeConfig().public.apiUrl}/${type}/${modId}/download?upd=${Date.now()}`
 }
