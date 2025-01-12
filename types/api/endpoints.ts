@@ -107,4 +107,9 @@ export class Endpoints {
   static getQuota(): string {
     return '/files/quota'
   }
+
+  // Popular
+  static getPopularMods(): string {
+    return '/popular'
+  }
 }
