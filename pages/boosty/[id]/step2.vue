@@ -2,15 +2,24 @@
 
 import StageStepper from '~/components/create/StageStepper.vue';
 import Button from '~/components/base/Button.vue';
-import { useCreateModStore } from '~/store/useCreateModStore';
 import { Limits } from '~/types/limits.enum';
 import CustomTextarea from '~/components/base/CustomTextarea.vue';
 import ImagesInput from '~/components/base/ImagesInput.vue';
 import { useFilesApi } from '~/composables/useFilesApi';
 import AnimateHeight from 'vue-animate-height';
+import resolveModifyLinks from '~/utils/resolveModifyLinks';
+import resolveCDNImage from '~/utils/resolveCDNImage';
+import { useAuthStore } from '~/store/useAuthStore';
+import { useBoostyApi } from '~/composables/useBoostyApi';
+import { ErrorCode } from '~/types/api/ErrorCode.enum';
+import { useEditManager } from '~/store/useEditManager';
+import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
 
-const createModStore = useCreateModStore()
+const editStore = useCreateBoostyModStore()
 const router = useRouter()
+const route = useRoute()
+
+const modId = route.params.id.toString()
 
 const isModDescriptionValid = ref(false)
 const isModInstallGuideValid = ref(false)
@@ -29,14 +38,39 @@ const isButtonActive = computed(() => {
   return isModDescriptionValid.value && isModInstallGuideValid.value && isModImagesValid.value
 })
 
-const go = () => {
+const baseUrl = computed(() => `/boosty/${modId}`)
+
+const isLoading = ref(false)
+
+const go = async () => {
   if (!isButtonActive.value) return
 
-  createModStore.setDescription(modDescription.value)
-  createModStore.setInstallGuide(modInstallGuide.value)
-  createModStore.setImages(modImages.value)
+  isLoading.value = true
 
-  router.push('/create/preset/step3')
+  editStore.setDescription(modDescription.value)
+  editStore.setInstallGuide(modInstallGuide.value)
+  editStore.setImages(modImages.value)
+
+  const images = []
+
+  for await (const file of editStore.getImages) {
+    if (typeof file === 'string') {
+      images.push(file)
+      continue
+    }
+
+    const { hash } = await useFilesApi().uploadFile(file as File)
+    images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
+  }
+
+  useBoostyApi().modify(modId, {
+    description: modDescription.value,
+    installGuide: modInstallGuide.value,
+    images
+  }).then(() => {
+    isLoading.value = false
+    router.push(baseUrl.value)
+  })
 }
 
 const descriptionValidator = (value: string) => {
@@ -56,16 +90,34 @@ const installGuideValidator = (value: string) => {
 }
 
 onMounted(async () => {
-  if (useCreateModStore().isDropped) return router.push('/create')
+  if (useEditManager().getEditId !== modId)
+    editStore.drop()
 
-  if (createModStore.description) modDescription.value = createModStore.getDescription
-  if (createModStore.installGuide) modInstallGuide.value = createModStore.getInstallGuide
-  if (createModStore.images) modImages.value = createModStore.getImages
+  const proof = await useBoostyApi().getModifyData(modId)
+    .catch(e => {
+      if (e.errorCode === ErrorCode.ModNotFound || e.errorCode === ErrorCode.ModNotOwned) {
+        if (window.history.length > 1) router.back()
+        else router.push('/boosty')
+      }
+    })
+
+  if (!proof) return;
+
+  editStore.loadFromData({
+    ...proof,
+    isDropped: false
+  })
+
+  useEditManager().setEditId(modId)
+
+  if (editStore.description) modDescription.value = editStore.getDescription
+  if (editStore.installGuide) modInstallGuide.value = editStore.getInstallGuide
+  if (editStore.images) modImages.value = editStore.getImages
 
   descriptionValidator(modDescription.value)
   installGuideValidator(modInstallGuide.value)
 
-  const data = await  useFilesApi().getQuota()
+  const data = await useFilesApi().getQuota()
   filesQuota.value = data.remaining
 })
 </script>
@@ -73,14 +125,14 @@ onMounted(async () => {
 <template>
   <div>
     <div class="mt-18 mb-10 flex flex-col gap-9">
-      <h1 class="uppercase text-3xl text-secondary font-light">Публикация мода</h1>
+      <h1 class="uppercase text-3xl text-secondary font-light">Изменение мода</h1>
       <div class="flex flex-row gap-14 align-baseline">
         <div class="flex flex-col gap-9 min-w-max">
           <div class="flex flex-col">
-            <h3 class="text-3xl font-medium text-primary">Как добавить мод?</h3>
-            <h5 class="text-xl font-light text-secondary">Выполните эти 4 простых шага</h5>
+            <h4 class="text-xl font-light text-secondary">СТРАНИЦА 2</h4>
+            <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :active-step="3"/>
+          <StageStepper :links="resolveModifyLinks(modId, 'boosty')" :is-modifying="true" :active-step="2"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">
@@ -92,12 +144,12 @@ onMounted(async () => {
               <div class="flex flex-col max-w-60 w-full gap-1">
                 <h2 class="text-3xl font-light text-primary">Описание</h2>
                 <h5 class="text-base leading-tight font-light text-secondary">
-                  Расскажите людям всё о вашем пресете! Вы можете использовать разметку Markdown<br>
+                  Расскажите людям всё о вашем моде! Вы можете использовать разметку Markdown<br>
                   <NuxtLink class="text-primary" to="/markdown-guide">Гайд по разметке</NuxtLink>
                 </h5>
               </div>
               <div class="w-full min-h-36">
-                <CustomTextarea name="modName" v-model="modDescription" @update:focus="value => descriptionFocused = value" class="w-full" :length-limit="Limits.ModDescriptionMaxLength" :validator="descriptionValidator" placeholder="Это очень красивый пресет на норда который понравится каждому!" />
+                <CustomTextarea name="modName" v-model="modDescription" @update:focus="value => descriptionFocused = value" class="w-full" :length-limit="Limits.ModDescriptionMaxLength" :validator="descriptionValidator" placeholder="Этот мод изменяет много вещей которые были изначально не удобными в ванильном скайриме, например..." />
               </div>
             </div>
             <AnimateHeight
@@ -116,14 +168,12 @@ onMounted(async () => {
               <div class="flex flex-col max-w-60 w-full gap-1">
                 <h2 class="text-3xl font-light text-primary">Установка</h2>
                 <h5 class="text-base leading-tight font-light text-secondary">
-                  А теперь пошагово расскажите людям как ставить ваш пресет.<br>
-                  <span class="text-primary">
-                    Если в моде нужны доп. моды, укажите их на следующей странице
-                  </span>
+                  А теперь пошагово расскажите людям как ставить ваш мод.<br>
+                  Если в моде нужна ректификация, просто напишите это одним из пунктов
                 </h5>
               </div>
               <div class="w-full min-h-28">
-                <CustomTextarea name="modShortDescription" v-model="modInstallGuide" @update:focus="value => installGuideFocused = value" class="w-full" :length-limit="Limits.ModInstallGuideMaxLength" :validator="installGuideValidator" :placeholder="'1. Закинуть пресет в папку\n2. Прогнать бодислайд'" />
+                <CustomTextarea name="modShortDescription" v-model="modInstallGuide" @update:focus="value => installGuideFocused = value" class="w-full" :length-limit="Limits.ModInstallGuideMaxLength" :validator="installGuideValidator" :placeholder="'1. Установите как обычный мод\n2. Ректификация не нужна'" />
               </div>
             </div>
             <AnimateHeight
@@ -141,18 +191,17 @@ onMounted(async () => {
             <div class="flex flex-row gap-20 w-full">
               <div class="flex flex-col max-w-60 w-full gap-1">
                 <h2 class="text-3xl font-light text-primary">Изображения</h2>
-                <h5 class="text-base leading-tight font-light text-secondary">Одна или несколько картинок, как ваш присет выглядит!<br><span class="text-primary">Учите, самая первая картинка будет отображаться как превью пресета</span></h5>
+                <h5 class="text-base leading-tight font-light text-secondary">Одна или несколько картинок, которые описали бы ваш мод!<br><span class="text-primary">Учите, самая первая картинка будет отображаться как превью мода</span></h5>
               </div>
               <div class="w-full overflow-x-auto">
                 <ImagesInput v-model="modImages" :remaining-files="filesQuota"/>
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">
-              <NuxtLink
-                to="/create/mods/step1">
-                <Button>Назад</Button>
-              </NuxtLink>
-              <Button :disabled="!isButtonActive" @click="go">Далее</Button>
+              <Button class="min-w-fit flex flex-row gap-2 items-center" :disabled="!isButtonActive" @click="go">
+                Сохранить
+                <LucideLoader2 v-if="isLoading" class="w-5 h-5 text-primary animate-spin"/>
+              </Button>
             </div>
           </div>
         </div>

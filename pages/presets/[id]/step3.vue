@@ -3,15 +3,20 @@
 import StageStepper from '~/components/create/StageStepper.vue';
 import CustomInput from '~/components/base/CustomInput.vue';
 import Button from '~/components/base/Button.vue';
+import { useCreateModStore } from '~/store/useCreateModStore';
 import { Limits } from '~/types/limits.enum';
 import type { AdditionalLink } from '~/types/api/mods.types';
-import resolveCDNImage from '~/utils/resolveCDNImage';
 import { useAuthStore } from '~/store/useAuthStore';
-import type { ModTags } from '~/types/mod-tags.enum';
-import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
+import resolveModifyLinks from '~/utils/resolveModifyLinks';
+import { usePresetsApi } from '~/composables/usePresetsApi';
+import { ErrorCode } from '~/types/api/ErrorCode.enum';
+import { useEditManager } from '~/store/useEditManager';
 
-const createModStore = useCreateBoostyModStore()
+const editStore = useCreateModStore()
 const router = useRouter()
+const route = useRoute()
+
+const modId = route.params.id.toString()
 
 const downloadLink = ref('')
 const links = ref<AdditionalLink[]>([])
@@ -25,36 +30,22 @@ const isButtonActive = computed(() => {
 
 const isLoading = ref(false)
 
+const baseUrl = computed(() => `/presets/${modId}`)
+
 const go = async () => {
   if (!isButtonActive.value && useAuthStore().getUser?.id) return
 
   isLoading.value = true
 
-  createModStore.setDownloadLink(downloadLink.value)
-  createModStore.setAdditionalLinks(links.value)
+  editStore.setDownloadLink(downloadLink.value)
+  editStore.setAdditionalLinks(links.value)
 
-  const images = []
-
-  for await (const file of createModStore.getImages) {
-    if (typeof file === 'string') {
-      images.push(file)
-      continue
-    }
-
-    const { hash } = await useFilesApi().uploadFile(file)
-    images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
-  }
-
-  const data = await useBoostyApi().createBoostyMod({
-    ...createModStore.getMod,
-    tags: createModStore.getTags as ModTags[],
-    images,
-    requiredTier: createModStore.getMinimalTier!
+  usePresetsApi().modify(modId, {
+    downloadLink: downloadLink.value,
+    additionalLinks: links.value
+  }).then(() => {
+    router.push(baseUrl.value)
   })
-
-  useCreateBoostyModStore().drop()
-
-  await router.push(`/boosty/${data.id}`)
 }
 
 const linkValidator = (value: string) => {
@@ -73,28 +64,47 @@ const nameValidator = (value: string) => {
 }
 
 onMounted(async () => {
-  if (useCreateBoostyModStore().isDropped || !(await useAuthApi().isModerator())) return router.push('/create')
+  if (useEditManager().getEditId !== modId)
+    editStore.drop()
 
-  if (createModStore.downloadLink) downloadLink.value = createModStore.getDownloadLink
-  if (createModStore.additionalLinks) links.value = createModStore.getAdditionalLinks
+  const data = await usePresetsApi().getModifyData(modId)
+    .catch(e => {
+      if (e.errorCode === ErrorCode.ModNotFound || e.errorCode === ErrorCode.ModNotOwned) {
+        if (window.history.length > 1) router.back()
+        else router.push('/presets')
+      }
+    })
+
+  if (!data) return;
+
+  editStore.loadFromData({
+    type: 'preset',
+    ...data,
+    isDropped: false
+  })
+
+  useEditManager().setEditId(modId)
+
+  if (editStore.downloadLink) downloadLink.value = editStore.getDownloadLink
+  if (editStore.additionalLinks) links.value = editStore.getAdditionalLinks
 })
 </script>
 
 <template>
   <div>
     <div class="mt-18 mb-10 flex flex-col gap-9">
-      <h1 class="uppercase text-3xl text-secondary font-light">Публикация мода</h1>
+      <h1 class="uppercase text-3xl text-secondary font-light">Изменение мода</h1>
       <div class="flex flex-row gap-14 align-baseline">
         <div class="flex flex-col gap-9 min-w-max">
           <div class="flex flex-col">
-            <h3 class="text-3xl font-medium text-primary">Как добавить мод?</h3>
-            <h5 class="text-xl font-light text-secondary">Выполните эти 4 простых шага</h5>
+            <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
+            <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :active-step="4"/>
+          <StageStepper :links="resolveModifyLinks(modId, 'presets')" :is-modifying="true" :active-step="3"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">
-            <h4 class="text-xl font-light text-secondary">ШАГ 4</h4>
+            <h4 class="text-xl font-light text-secondary">СТРАНИЦА 3</h4>
             <h3 class="text-3xl font-normal text-primary uppercase">Настроим ссылки</h3>
           </div>
           <div class="flex flex-col gap-7">
@@ -139,12 +149,8 @@ onMounted(async () => {
             <div class="w-full flex flex-row justify-start gap-7">
               <Button :disabled="links.length >= 3" class="min-w-fit" @click="links = [...links, { url: '', name: '' }]">Добавить ссылку</Button>
               <div class="w-full min-w-fit flex flex-row justify-end gap-7">
-                <NuxtLink
-                  to="/create/boosty/step2">
-                  <Button>Назад</Button>
-                </NuxtLink>
                 <Button class="min-w-fit flex flex-row gap-2 items-center" :disabled="!isButtonActive" @click="go">
-                  Далее
+                  Сохранить
                   <LucideLoader2 v-if="isLoading" class="w-5 h-5 text-primary animate-spin"/>
                 </Button>
               </div>

@@ -36,9 +36,32 @@ export const usePresetsApi = () => {
     else throw new Error
   }
 
+  const getModifyData = async (id: string) => {
+    const { error, data } = await useApiFetch<ApiResponse<Preset>>(Endpoints.getModifyPresetData(id))
+
+    if (error.value) resolveError(error.value.data)
+
+    if (data.value) return data.value.result
+    else throw new Error('No data')
+  }
+
+  const modify = async (id: string, body: Partial<CreatePreset>) => {
+    const { error, data } = await useApiFetch<ApiResponse<Preset>>(Endpoints.modifyPreset(id), {
+      method: 'PATCH',
+      body: JSON.stringify(body)
+    })
+
+    if (error.value) resolveError(error.value.data)
+
+    if (data.value) return data.value.result
+    else throw new Error
+  }
+
   return {
     findOne,
     findAll,
-    createPreset
+    createPreset,
+    getModifyData,
+    modify
   }
 }

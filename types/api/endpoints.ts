@@ -49,6 +49,10 @@ export class Endpoints {
     return `/mods/${id}`
   }
 
+  static getModifyModData(id: string): string {
+    return `/mods/${id}/modify`
+  }
+
   // Presets
   static getPreset(id: string): string {
     return `/presets/${id}`
@@ -68,6 +72,10 @@ export class Endpoints {
 
   static deletePreset(id: string): string {
     return `/presets/${id}`
+  }
+
+  static getModifyPresetData(id: string): string {
+    return `/presets/${id}/modify`
   }
 
   // Boosty
@@ -93,6 +101,10 @@ export class Endpoints {
 
   static deleteBoostyMod(id: string): string {
     return `/boosty/${id}`
+  }
+
+  static getModifyBoostyData(id: string): string {
+    return `/boosty/${id}/modify`
   }
 
   // Files

@@ -8,9 +8,18 @@ import CustomTextarea from '~/components/base/CustomTextarea.vue';
 import ImagesInput from '~/components/base/ImagesInput.vue';
 import { useFilesApi } from '~/composables/useFilesApi';
 import AnimateHeight from 'vue-animate-height';
+import resolveModifyLinks from '~/utils/resolveModifyLinks';
+import resolveCDNImage from '~/utils/resolveCDNImage';
+import { useAuthStore } from '~/store/useAuthStore';
+import { usePresetsApi } from '~/composables/usePresetsApi';
+import { ErrorCode } from '~/types/api/ErrorCode.enum';
+import { useEditManager } from '~/store/useEditManager';
 
-const createModStore = useCreateModStore()
+const editStore = useCreateModStore()
 const router = useRouter()
+const route = useRoute()
+
+const modId = route.params.id.toString()
 
 const isModDescriptionValid = ref(false)
 const isModInstallGuideValid = ref(false)
@@ -29,14 +38,39 @@ const isButtonActive = computed(() => {
   return isModDescriptionValid.value && isModInstallGuideValid.value && isModImagesValid.value
 })
 
-const go = () => {
+const baseUrl = computed(() => `/presets/${modId}`)
+
+const isLoading = ref(false)
+
+const go = async () => {
   if (!isButtonActive.value) return
 
-  createModStore.setDescription(modDescription.value)
-  createModStore.setInstallGuide(modInstallGuide.value)
-  createModStore.setImages(modImages.value)
+  isLoading.value = true
 
-  router.push('/create/preset/step3')
+  editStore.setDescription(modDescription.value)
+  editStore.setInstallGuide(modInstallGuide.value)
+  editStore.setImages(modImages.value)
+
+  const images = []
+
+  for await (const file of editStore.getImages) {
+    if (typeof file === 'string') {
+      images.push(file)
+      continue
+    }
+
+    const { hash } = await useFilesApi().uploadFile(file as File)
+    images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
+  }
+
+  usePresetsApi().modify(modId, {
+    description: modDescription.value,
+    installGuide: modInstallGuide.value,
+    images
+  }).then(() => {
+    isLoading.value = false
+    router.push(baseUrl.value)
+  })
 }
 
 const descriptionValidator = (value: string) => {
@@ -56,16 +90,35 @@ const installGuideValidator = (value: string) => {
 }
 
 onMounted(async () => {
-  if (useCreateModStore().isDropped) return router.push('/create')
+  if (useEditManager().getEditId !== modId)
+    editStore.drop()
 
-  if (createModStore.description) modDescription.value = createModStore.getDescription
-  if (createModStore.installGuide) modInstallGuide.value = createModStore.getInstallGuide
-  if (createModStore.images) modImages.value = createModStore.getImages
+  const proof = await usePresetsApi().getModifyData(modId)
+    .catch(e => {
+      if (e.errorCode === ErrorCode.ModNotFound || e.errorCode === ErrorCode.ModNotOwned) {
+        if (window.history.length > 1) router.back()
+        else router.push('/presets')
+      }
+    })
+
+  if (!proof) return;
+
+  editStore.loadFromData({
+    type: 'preset',
+    ...proof,
+    isDropped: false
+  })
+
+  useEditManager().setEditId(modId)
+
+  if (editStore.description) modDescription.value = editStore.getDescription
+  if (editStore.installGuide) modInstallGuide.value = editStore.getInstallGuide
+  if (editStore.images) modImages.value = editStore.getImages
 
   descriptionValidator(modDescription.value)
   installGuideValidator(modInstallGuide.value)
 
-  const data = await  useFilesApi().getQuota()
+  const data = await useFilesApi().getQuota()
   filesQuota.value = data.remaining
 })
 </script>
@@ -73,18 +126,18 @@ onMounted(async () => {
 <template>
   <div>
     <div class="mt-18 mb-10 flex flex-col gap-9">
-      <h1 class="uppercase text-3xl text-secondary font-light">Публикация мода</h1>
+      <h1 class="uppercase text-3xl text-secondary font-light">Изменение мода</h1>
       <div class="flex flex-row gap-14 align-baseline">
         <div class="flex flex-col gap-9 min-w-max">
           <div class="flex flex-col">
-            <h3 class="text-3xl font-medium text-primary">Как добавить мод?</h3>
-            <h5 class="text-xl font-light text-secondary">Выполните эти 4 простых шага</h5>
+            <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
+            <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :active-step="3"/>
+          <StageStepper :links="resolveModifyLinks(modId, 'presets')" :is-modifying="true" :active-step="2"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">
-            <h4 class="text-xl font-light text-secondary">ШАГ 3</h4>
+            <h4 class="text-xl font-light text-secondary">СТРАНИЦА 2</h4>
             <h3 class="text-3xl font-normal text-primary uppercase">Информация о моде</h3>
           </div>
           <div class="flex flex-col gap-7">
@@ -148,11 +201,10 @@ onMounted(async () => {
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">
-              <NuxtLink
-                to="/create/mods/step1">
-                <Button>Назад</Button>
-              </NuxtLink>
-              <Button :disabled="!isButtonActive" @click="go">Далее</Button>
+              <Button class="min-w-fit flex flex-row gap-2 items-center" :disabled="!isButtonActive" @click="go">
+                Сохранить
+                <LucideLoader2 v-if="isLoading" class="w-5 h-5 text-primary animate-spin"/>
+              </Button>
             </div>
           </div>
         </div>

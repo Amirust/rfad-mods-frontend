@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { BoostyLevelList } from '~/locale/boosty.levels';
 
-const emit = defineEmits<{
-  (e: 'update:value', value: number[]): void;
-}>();
-
-const selectedTags = ref<number[]>([]);
+const selectedTags = defineModel<number[]>({
+  required: true
+});
 
 const tags = BoostyLevelList
 
 const toggleTag = (tag: number) => {
-  selectedTags.value = [ tag ]
-
-  emit('update:value', selectedTags.value);
+  selectedTags.value = [ tag ];
 };
 </script>
 

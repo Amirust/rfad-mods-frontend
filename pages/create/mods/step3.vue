@@ -37,6 +37,11 @@ const go = async () => {
   const images = []
 
   for await (const file of createModStore.getImages) {
+    if (typeof file === 'string') {
+      images.push(file)
+      continue
+    }
+
     const { hash } = await useFilesApi().uploadFile(file)
     images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
   }

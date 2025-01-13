@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Html lang="ru">
+    <Html lang="ru-RU">
       <Head>
         <Title>{{ title }}</Title>
         <Meta property="og:title" :content="title" />

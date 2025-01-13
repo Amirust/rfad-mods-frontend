@@ -5,36 +5,52 @@ import CustomInput from '~/components/base/CustomInput.vue';
 import Button from '~/components/base/Button.vue';
 import { useCreateModStore } from '~/store/useCreateModStore';
 import { Limits } from '~/types/limits.enum';
-import PresetsRaceSelector from '~/components/base/PresetsRaceSelector.vue';
-import PresetsTagsSelector from '~/components/base/PresetsTagsSelector.vue';
-import type { PresetTags } from '~/types/preset-tags.enum';
-import { resolvePresetTagsRawResult } from '~/utils/resolvePresetsTags.util';
+import { ErrorCode } from '~/types/api/ErrorCode.enum';
+import resolveModifyLinks from '~/utils/resolveModifyLinks';
+import { useEditManager } from '~/store/useEditManager';
+import TagsSelector from '~/components/base/ModsTagsSelector.vue';
+import type { ModTags } from '~/types/mod-tags.enum';
+import { useModsApi } from '~/composables/useModsApi';
 
-const createModStore = useCreateModStore()
+const editStore = useCreateModStore()
 const router = useRouter()
+const route = useRoute()
+
+const modId = route.params.id.toString()
 
 const isNameValid = ref(false)
 const isShortDescriptionValid = ref(false)
-const selectedRace = ref<PresetTags[]>([])
-const isSelectedRaceValid = computed(() => selectedRace.value.length > 0)
-const selectedTags = ref<PresetTags[]>([])
+const selectedTags = ref<ModTags[]>([])
 const isSelectedTagsValid = computed(() => selectedTags.value.length > 0)
 
 const modName = ref('')
 const modShortDescription = ref('')
 
 const isButtonActive = computed(() => {
-  return isNameValid.value && isShortDescriptionValid.value && isSelectedRaceValid.value && isSelectedTagsValid.value
+  return isNameValid.value && isShortDescriptionValid.value && isSelectedTagsValid.value
 })
+
+const baseUrl = computed(() => `/mods/${modId}`)
+
+const isLoading = ref(false)
 
 const go = () => {
   if (!isButtonActive.value) return
 
-  createModStore.setName(modName.value)
-  createModStore.setShortDescription(modShortDescription.value)
-  createModStore.setTags([ ...selectedRace.value, ...selectedTags.value ])
+  editStore.setName(modName.value)
+  editStore.setShortDescription(modShortDescription.value)
+  editStore.setTags(selectedTags.value)
 
-  router.push('/create/preset/step2')
+  isLoading.value = true
+
+  useModsApi().modify(modId, {
+    name: modName.value,
+    shortDescription: modShortDescription.value,
+    tags: selectedTags.value
+  }).then(() => {
+    isLoading.value = false
+    router.push(baseUrl.value)
+  })
 }
 
 const nameValidator = (value: string) => {
@@ -53,16 +69,31 @@ const shortDescriptionValidator = (value: string) => {
   return null
 }
 
-onMounted(() => {
-  if (useCreateModStore().isDropped) return router.push('/create')
+onMounted(async () => {
+  if (useEditManager().getEditId !== modId)
+    editStore.drop()
 
-  if (createModStore.name) modName.value = createModStore.getName
-  if (createModStore.shortDescription) modShortDescription.value = createModStore.getShortDescription
-  if (createModStore.tags) {
-    const { race, other } = resolvePresetTagsRawResult(createModStore.tags as PresetTags[])
-    selectedRace.value = race
-    selectedTags.value = other
-  }
+  const data = await useModsApi().getModifyData(modId)
+    .catch(e => {
+      if (e.errorCode === ErrorCode.ModNotFound || e.errorCode === ErrorCode.ModNotOwned) {
+        if (window.history.length > 1) router.back()
+        else router.push('/mods')
+      }
+    })
+
+  if (!data) return;
+
+  editStore.loadFromData({
+    type: 'mod',
+    ...data,
+    isDropped: false
+  })
+
+  useEditManager().setEditId(modId)
+
+  if (editStore.name) modName.value = editStore.getName
+  if (editStore.shortDescription) modShortDescription.value = editStore.getShortDescription
+  if (editStore.tags) selectedTags.value = editStore.getTags as ModTags[]
 
   nameValidator(modName.value)
   shortDescriptionValidator(modShortDescription.value)
@@ -72,25 +103,25 @@ onMounted(() => {
 <template>
   <div>
     <div class="mt-18 mb-10 flex flex-col gap-9">
-      <h1 class="uppercase text-3xl text-secondary font-light">Публикация мода</h1>
+      <h1 class="uppercase text-3xl text-secondary font-light">Изменение мода</h1>
       <div class="flex flex-row gap-14 align-baseline">
         <div class="flex flex-col gap-9 min-w-max">
           <div class="flex flex-col">
-            <h3 class="text-3xl font-medium text-primary">Как добавить мод?</h3>
-            <h5 class="text-xl font-light text-secondary">Выполните эти 4 простых шага</h5>
+            <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
+            <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :active-step="2"/>
+          <StageStepper :links="resolveModifyLinks(modId, 'mods')" :is-modifying="true" :active-step="1"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">
-            <h4 class="text-xl font-light text-secondary">ШАГ 2</h4>
+            <h4 class="text-xl font-light text-secondary">СТРАНИЦА 1</h4>
             <h3 class="text-3xl font-normal text-primary uppercase">Заполним оглавление</h3>
           </div>
           <div class="flex flex-col gap-7">
             <div class="flex flex-row gap-20 w-full">
               <div class="flex flex-col max-w-60 w-full gap-1">
                 <h2 class="text-3xl font-light text-primary">Название</h2>
-                <h5 class="text-base leading-tight font-light text-secondary">Самое главное о вашем пресете несколькими словами</h5>
+                <h5 class="text-base leading-tight font-light text-secondary">Самое главное о вашем моде несколькими словами</h5>
               </div>
               <div class="w-full">
                 <CustomInput name="modName" v-model="modName" class="w-full" :length-limit="Limits.ModNameMaxLength" :validator="nameValidator" placeholder="Введите название..." />
@@ -99,31 +130,26 @@ onMounted(() => {
             <div class="flex flex-row gap-20 w-full">
               <div class="flex flex-col max-w-60 w-full gap-1">
                 <h2 class="text-3xl font-light text-primary">Краткое описание</h2>
-                <h5 class="text-base leading-tight font-light text-secondary">Завлеките людей этим описанием, оно отображается на странице со всеми пресетами</h5>
+                <h5 class="text-base leading-tight font-light text-secondary">Завлеките людей этим описанием, оно отображается на странице со всеми модами</h5>
               </div>
               <div class="w-full">
                 <CustomInput name="modShortDescription" v-model="modShortDescription"  class="w-full" :length-limit="Limits.ModShortDescriptionMaxLength" :validator="shortDescriptionValidator" placeholder="Введите краткое описание ..." />
               </div>
             </div>
             <div class="flex flex-row gap-20 w-full">
-              <div class="flex flex-col max-w-60 min-w-60 w-full gap-1">
-                <h2 class="text-3xl font-light text-primary">Раса</h2>
-                <h5 class="text-base leading-tight font-light text-secondary">Выберите расу под которую был создан ваш пресет</h5>
-              </div>
-              <PresetsRaceSelector v-model="selectedRace" />
-            </div>
-            <div class="flex flex-row gap-20 w-full">
               <div class="flex flex-col max-w-60 w-full gap-1">
                 <h2 class="text-3xl font-light text-primary">Теги</h2>
-                <h5 class="text-base leading-tight font-light text-secondary">Выберите расу под которую был создан ваш пресет</h5>
+                <h5 class="text-base leading-tight font-light text-secondary">Сначала выберите категорию, остальные теги вы увидите после этого</h5>
               </div>
               <div class="w-full">
-                <PresetsTagsSelector v-model="selectedTags" />
+                <TagsSelector v-model="selectedTags"/>
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">
-              <Button @click="router.back()">Назад</Button>
-              <Button :disabled="!isButtonActive" @click="go">Далее</Button>
+              <Button class="min-w-fit flex flex-row gap-2 items-center" :disabled="!isButtonActive" @click="go">
+                Сохранить
+                <LucideLoader2 v-if="isLoading" class="w-5 h-5 text-primary animate-spin"/>
+              </Button>
             </div>
           </div>
         </div>

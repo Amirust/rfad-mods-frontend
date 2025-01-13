@@ -2,16 +2,23 @@
 
 import StageStepper from '~/components/create/StageStepper.vue';
 import CustomInput from '~/components/base/CustomInput.vue';
-import TagsSelector from '~/components/base/ModsTagsSelector.vue';
 import Button from '~/components/base/Button.vue';
-import type { ModTags } from '~/types/mod-tags.enum';
 import { Limits } from '~/types/limits.enum';
-import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
+import { ErrorCode } from '~/types/api/ErrorCode.enum';
+import resolveModifyLinks from '~/utils/resolveModifyLinks';
+import { useEditManager } from '~/store/useEditManager';
+import TagsSelector from '~/components/base/ModsTagsSelector.vue';
+import type { ModTags } from '~/types/mod-tags.enum';
+import { useBoostyApi } from '~/composables/useBoostyApi';
 import BoostyTierSelector from '~/components/base/BoostyTierSelector.vue';
 import { BoostyTierEnum } from '~/types/boosty-tier.enum';
+import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
 
-const createModStore = useCreateBoostyModStore()
+const editStore = useCreateBoostyModStore()
 const router = useRouter()
+const route = useRoute()
+
+const modId = route.params.id.toString()
 
 const isNameValid = ref(false)
 const isShortDescriptionValid = ref(false)
@@ -27,15 +34,29 @@ const isButtonActive = computed(() => {
   return isNameValid.value && isShortDescriptionValid.value && isSelectedTagsValid.value && isSelectedTierValid.value
 })
 
+const baseUrl = computed(() => `/boosty/${modId}`)
+
+const isLoading = ref(false)
+
 const go = () => {
   if (!isButtonActive.value) return
 
-  createModStore.setName(modName.value)
-  createModStore.setShortDescription(modShortDescription.value)
-  createModStore.setTags(selectedTags.value)
-  createModStore.setMinimalTier(selectedTier.value[0])
+  editStore.setName(modName.value)
+  editStore.setShortDescription(modShortDescription.value)
+  editStore.setTags(selectedTags.value)
+  editStore.setMinimalTier(selectedTier.value[0])
 
-  router.push('/create/boosty/step2')
+  isLoading.value = true
+
+  useBoostyApi().modify(modId, {
+    name: modName.value,
+    shortDescription: modShortDescription.value,
+    tags: selectedTags.value,
+    requiredTier: selectedTier.value[0]
+  }).then(() => {
+    isLoading.value = false
+    router.push(baseUrl.value)
+  })
 }
 
 const nameValidator = (value: string) => {
@@ -55,11 +76,30 @@ const shortDescriptionValidator = (value: string) => {
 }
 
 onMounted(async () => {
-  if (useCreateBoostyModStore().isDropped || !(await useAuthApi().isModerator())) return router.push('/create')
+  if (useEditManager().getEditId !== modId)
+    editStore.drop()
 
-  if (createModStore.name) modName.value = createModStore.getName
-  if (createModStore.shortDescription) modShortDescription.value = createModStore.getShortDescription
-  if (createModStore.tags) selectedTags.value = createModStore.getTags as ModTags[]
+  const data = await useBoostyApi().getModifyData(modId)
+    .catch(e => {
+      if (e.errorCode === ErrorCode.ModNotFound || e.errorCode === ErrorCode.ModNotOwned) {
+        if (window.history.length > 1) router.back()
+        else router.push('/boosty')
+      }
+    })
+
+  if (!data) return;
+
+  editStore.loadFromData({
+    ...data,
+    isDropped: false
+  })
+
+  useEditManager().setEditId(modId)
+
+  if (editStore.name) modName.value = editStore.getName
+  if (editStore.shortDescription) modShortDescription.value = editStore.getShortDescription
+  if (editStore.tags) selectedTags.value = editStore.getTags as ModTags[]
+  if (editStore.requiredTier) selectedTier.value = [ editStore.requiredTier ]
 
   nameValidator(modName.value)
   shortDescriptionValidator(modShortDescription.value)
@@ -69,18 +109,18 @@ onMounted(async () => {
 <template>
   <div>
     <div class="mt-18 mb-10 flex flex-col gap-9">
-      <h1 class="uppercase text-3xl text-secondary font-light">Публикация мода</h1>
+      <h1 class="uppercase text-3xl text-secondary font-light">Изменение мода</h1>
       <div class="flex flex-row gap-14 align-baseline">
         <div class="flex flex-col gap-9 min-w-max">
           <div class="flex flex-col">
-            <h3 class="text-3xl font-medium text-primary">Как добавить мод?</h3>
-            <h5 class="text-xl font-light text-secondary">Выполните эти 4 простых шага</h5>
+            <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
+            <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :active-step="2"/>
+          <StageStepper :links="resolveModifyLinks(modId, 'boosty')" :is-modifying="true" :active-step="1"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">
-            <h4 class="text-xl font-light text-secondary">ШАГ 2</h4>
+            <h4 class="text-xl font-light text-secondary">СТРАНИЦА 1</h4>
             <h3 class="text-3xl font-normal text-primary uppercase">Заполним оглавление</h3>
           </div>
           <div class="flex flex-col gap-7">
@@ -108,7 +148,7 @@ onMounted(async () => {
                 <h5 class="text-base leading-tight font-light text-secondary">Сначала выберите категорию, остальные теги вы увидите после этого</h5>
               </div>
               <div class="w-full">
-                <TagsSelector v-model="selectedTags" />
+                <TagsSelector v-model="selectedTags"/>
               </div>
             </div>
             <div class="flex flex-row gap-20 w-full">
@@ -117,12 +157,14 @@ onMounted(async () => {
                 <h5 class="text-base leading-tight font-light text-secondary">Выберите какой тир нужен человеку, чтобы скачать этот мод</h5>
               </div>
               <div class="w-full">
-                <BoostyTierSelector @update:value="value => selectedTier = value" />
+                <BoostyTierSelector v-model="selectedTier" />
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">
-              <Button @click="router.back()">Назад</Button>
-              <Button :disabled="!isButtonActive" @click="go">Далее</Button>
+              <Button class="min-w-fit flex flex-row gap-2 items-center" :disabled="!isButtonActive" @click="go">
+                Сохранить
+                <LucideLoader2 v-if="isLoading" class="w-5 h-5 text-primary animate-spin"/>
+              </Button>
             </div>
           </div>
         </div>

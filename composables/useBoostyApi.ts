@@ -36,9 +36,33 @@ export const useBoostyApi = () => {
     else throw new Error
   }
 
+
+  const getModifyData = async (id: string) => {
+    const { error, data } = await useApiFetch<ApiResponse<BoostyMod>>(Endpoints.getModifyBoostyData(id))
+
+    if (error.value) resolveError(error.value.data)
+
+    if (data.value) return data.value.result
+    else throw new Error('No data')
+  }
+
+  const modify = async (id: string, body: Partial<CreateBoostyMod>) => {
+    const { error, data } = await useApiFetch<ApiResponse<BoostyMod>>(Endpoints.modifyBoostyMod(id), {
+      method: 'PATCH',
+      body: JSON.stringify(body)
+    })
+
+    if (error.value) resolveError(error.value.data)
+
+    if (data.value) return data.value.result
+    else throw new Error
+  }
+
   return {
     findOne,
     findAll,
-    createBoostyMod
+    createBoostyMod,
+    getModifyData,
+    modify
   }
 }
