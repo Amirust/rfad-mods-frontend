@@ -61,8 +61,8 @@ const toggleCollapsible = () => {
       >
         <div class="flex flex-col gap-2 mt-4">
           <NuxtLink @click="isCollapsibleOpen = false" to="/mods" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Опциональные</NuxtLink>
-          <NuxtLink @click="isCollapsibleOpen = false" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Пресеты</NuxtLink>
-          <NuxtLink @click="isCollapsibleOpen = false" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Бусти</NuxtLink>
+          <NuxtLink @click="isCollapsibleOpen = false" to="/presets" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Пресеты</NuxtLink>
+          <NuxtLink @click="isCollapsibleOpen = false" to="/boosty" class="nuxt-link text-2xl font-light uppercase hover:text-primary transition-colors" active-class="active">Бусти</NuxtLink>
           <div class="horiz-line"/>
           <div class="w-full flex flex-row items-center gap-6 mt-1">
             <transition name="fade">
