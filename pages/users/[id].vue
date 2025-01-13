@@ -58,13 +58,13 @@ onMounted(() => {
       <transition name="fade">
         <template v-if="!showSkeleton && user">
           <div class="min-w-72 max-w-72 text-primary flex flex-col gap-5">
-            <div class="flex flex-row gap-4 items-center">
+            <div class="flex flex-row gap-4 items-center text-ellipsis w-full">
               <img
                 :src="resolveDiscordAvatarUtil(user.id, user.avatarHash)"
                 alt="avatar"
                 class="w-12 h-12 rounded-md"
               />
-              <span class="text-primary uppercase text-3xl">
+              <span class="text-primary uppercase text-3xl text-ellipsis overflow-hidden">
                 {{ user.globalName }}
               </span>
             </div>

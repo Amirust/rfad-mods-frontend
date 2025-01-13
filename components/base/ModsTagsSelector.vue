@@ -33,7 +33,7 @@ const selectCategory = (category: string) => {
   }
   else {
     selectedCategory.value = category;
-    selectedTags.value = [];
+    selectedTags.value = [ resolveCategoryFromName(category as string)!.value ];
     emit('update:value', [ resolveCategoryFromName(category as string)!.value ]);
   }
 };
