@@ -29,7 +29,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: 'https://rfad-se-backend.rinisle.uk',
-      discordOAuthUrl: 'https://discord.com/oauth2/authorize?client_id=1320082838951034910&response_type=code&redirect_uri=https%3A%2F%2Frfad-mods.rinisle.uk%2Foauth2&scope=identify',
+      discordOAuthUrl: 'https://discord.com/oauth2/authorize?client_id=1320082838951034910&response_type=code&redirect_uri=https%3A%2F%2Frfad-mods.rinisle.uk%2Foauth2%2F&scope=identify',
       cdnUrl: 'https://rfad-images-test.rinisle.uk/images/', // https://images.example.com/images/ОСТАВИТЬ_ПУСТЫМ, сюда будет писаться хеш
       boostyUrl: 'https://boosty.to/skyrim_rfad_chicken'
     }
