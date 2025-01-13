@@ -5,7 +5,7 @@
 <template>
   <div>
     <div class="w-full h-full relative">
-      <NuxtImg class="w-full h-full mask rounded-md" src="isla-test.png" placeholder/>
+      <NuxtImg class="w-full h-full mask rounded-md" src="https://rfad-images-test.rinisle.uk/images/965873006079524864_1c8ed7e470d6528a3bb7a01eaa994ddd.webp" placeholder/>
       <div class="absolute top-0 left-0 z-10 flex items-center justify-center w-full h-full text-primary uppercase text-3xl tracking-wide font-light">
         БУСТИ
       </div>
