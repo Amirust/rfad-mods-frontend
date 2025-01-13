@@ -107,7 +107,13 @@ onMounted(async () => {
         <template v-if="!isLoading && preset">
           <div class="w-full h-full flex flex-col gap-6">
             <div v-if="preset.images.length" class="flex flex-col xl:flex-row gap-4 flex-wrap">
-              <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md object-cover" v-for="img in preset.images" :key="img" :src="img" placeholder />
+              <NuxtLink
+                v-for="img in preset.images" :key="img"
+                :to="img"
+                target="_blank"
+              >
+                <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md object-cover" :src="img" placeholder />
+              </NuxtLink>
             </div>
             <div>
               <h3 class="text-2xl font-medium text-secondary">Описание</h3>

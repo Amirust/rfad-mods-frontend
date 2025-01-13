@@ -12,6 +12,8 @@ export default {
   theme: {
     extend: {
       screens: {
+        '2k': '2048px',
+        '4k': '3840px',
         '3xl': '1860px'
         // => @media (min-width: 1860px) { ... }
       },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mx-6 xl:mx-40 2xl:mx-44 3xl:mx-48 min-h-svh h-full">
+    <div class="mx-6 xl:mx-40 2xl:mx-44 3xl:mx-48 2k:mx-52 4k:mx-56 min-h-svh h-full">
       <AppHeader/>
       <slot />
     </div>
