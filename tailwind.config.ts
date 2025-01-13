@@ -44,7 +44,7 @@ export default {
         168: '47.5rem'
       },
       fontFamily: {
-        sans: [ 'Futura PT', 'sans-serif' ]
+        sans: [ 'Futura', 'sans-serif' ]
       },
       colors: {
         primary: '#FFEABF',
