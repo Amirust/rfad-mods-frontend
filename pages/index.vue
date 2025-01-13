@@ -80,7 +80,7 @@ onMounted(async () => {
             <PopularCategory
               title="ОПЦИОНАЛЬНЫЕ"
               description="Моды созданные разработчиками или сообществом но которые не вошли в основную сборку"
-              image="zodiac-screen.webp"
+              image="https://rfad-images-test.rinisle.uk/images/965873006079524864_1c8ed7e470d6528a3bb7a01eaa994ddd.webp"
               class="grid-elem"
             />
           </NuxtLink>
@@ -88,7 +88,7 @@ onMounted(async () => {
             <PopularCategory
               title="ПРЕСЕТЫ"
               description="Хотите модельную внешность у своего персонажа, но не умеете её создавать? Умельцы уже решили эту проблему!"
-              image="zodiac-screen.webp"
+              image="https://rfad-images-test.rinisle.uk/images/965873006079524864_1c8ed7e470d6528a3bb7a01eaa994ddd.webp"
               class="grid-elem"
             />
           </NuxtLink>
@@ -96,7 +96,7 @@ onMounted(async () => {
             <PopularCategory
               title="Бусти"
               description="Эксклюзивные моды, которые доступны только подписчикам Бусти. Здесь вы сможете найти совершенно новые моды для сборки"
-              image="zodiac-screen.webp"
+              image="https://rfad-images-test.rinisle.uk/images/965873006079524864_1c8ed7e470d6528a3bb7a01eaa994ddd.webp"
               class="grid-elem"
             />
           </NuxtLink>
