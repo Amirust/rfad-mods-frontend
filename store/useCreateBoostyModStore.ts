@@ -11,8 +11,8 @@ export interface UseCreateModStoreInterface {
   tags: ModTags[] | PresetTags[]
   downloadLink: string
   additionalLinks: {name: string, url: string}[]
-  images: File[],
-  minimalTier: BoostyTierEnum | null,
+  images: (string | File)[],
+  requiredTier: BoostyTierEnum | null,
   isDropped: boolean,
 }
 
@@ -26,7 +26,7 @@ export const useCreateBoostyModStore = defineStore('createBoostyMod', {
     downloadLink: '',
     additionalLinks: [],
     images: [],
-    minimalTier: null,
+    requiredTier: null,
     isDropped: true
   }) as UseCreateModStoreInterface,
   actions: {
@@ -51,11 +51,11 @@ export const useCreateBoostyModStore = defineStore('createBoostyMod', {
     setAdditionalLinks(additionalLinks: {name: string, url: string}[]) {
       this.additionalLinks = additionalLinks
     },
-    setImages(images: File[]) {
+    setImages(images: (string | File)[]) {
       this.images = images
     },
     setMinimalTier(minimalTier: BoostyTierEnum) {
-      this.minimalTier = minimalTier
+      this.requiredTier = minimalTier
     },
     drop() {
       this.isDropped = true
@@ -67,7 +67,18 @@ export const useCreateBoostyModStore = defineStore('createBoostyMod', {
       this.downloadLink = ''
       this.additionalLinks = []
       this.images = []
-      this.minimalTier = null
+      this.requiredTier = null
+    },
+    loadFromData(data: UseCreateModStoreInterface) {
+      this.name = data.name
+      this.shortDescription = data.shortDescription
+      this.description = data.description
+      this.installGuide = data.installGuide
+      this.tags = data.tags
+      this.downloadLink = data.downloadLink
+      this.additionalLinks = data.additionalLinks
+      this.images = data.images
+      this.requiredTier = data.requiredTier
     }
   },
   getters: {
@@ -79,7 +90,7 @@ export const useCreateBoostyModStore = defineStore('createBoostyMod', {
     getDownloadLink: (state) => state.downloadLink,
     getAdditionalLinks: (state) => state.additionalLinks,
     getImages: (state) => state.images,
-    getMinimalTier: (state) => state.minimalTier,
+    getMinimalTier: (state) => state.requiredTier,
     getIsDropped: (state) => state.isDropped,
     getMod: (state) => {
       return {

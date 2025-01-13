@@ -54,6 +54,7 @@ onMounted(() => {
 
   if (createModStore.name) modName.value = createModStore.getName
   if (createModStore.shortDescription) modShortDescription.value = createModStore.getShortDescription
+  if (createModStore.tags) selectedTags.value = createModStore.getTags as ModTags[]
 
   nameValidator(modName.value)
   shortDescriptionValidator(modShortDescription.value)
@@ -102,7 +103,7 @@ onMounted(() => {
                 <h5 class="text-base leading-tight font-light text-secondary">Сначала выберите категорию, остальные теги вы увидите после этого</h5>
               </div>
               <div class="w-full">
-                <TagsSelector @update:value="value => selectedTags = value" />
+                <TagsSelector v-model="selectedTags" />
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">

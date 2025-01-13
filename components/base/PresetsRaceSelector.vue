@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { PresetTagList } from '~/locale/presets.tags';
 import { Limits } from '~/types/limits.enum';
 
@@ -7,7 +7,9 @@ const emit = defineEmits<{
   (e: 'update:value', value: number[]): void;
 }>();
 
-const selectedTags = ref<number[]>([]);
+const selectedTags = defineModel<number[]>({
+  required: true
+});
 
 const tags = computed(() => {
   return PresetTagList.find(item => item.category === 'Раса')?.values || [];
@@ -20,8 +22,6 @@ const toggleTag = (tag: number) => {
     selectedTags.value = selectedTags.value.filter(item => item !== tag);
   else
     selectedTags.value.push(tag);
-
-  emit('update:value', selectedTags.value);
 };
 </script>
 

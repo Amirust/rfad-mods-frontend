@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { type PresetTag, PresetTagList } from '~/locale/presets.tags';
 
 const emit = defineEmits<{
   (e: 'update:value', value: number[]): void;
 }>();
 
-const selectedTags = ref<number[]>([]);
+const selectedTags = defineModel<number[]>({
+  required: true
+});
 
 const tags: PresetTag[] = PresetTagList.filter(e => e.category !== 'Раса').map(e => {
   return e.values;
@@ -17,8 +18,6 @@ const toggleTag = (tag: number) => {
     selectedTags.value = selectedTags.value.filter(item => item !== tag);
   else
     selectedTags.value.push(tag);
-
-  emit('update:value', selectedTags.value);
 };
 </script>
 

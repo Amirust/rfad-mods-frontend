@@ -11,7 +11,7 @@ export interface UseCreateModStoreInterface {
   tags: ModTags[] | PresetTags[]
   downloadLink: string
   additionalLinks: {name: string, url: string}[]
-  images: File[],
+  images: (File | string)[],
   isDropped: boolean
 }
 
@@ -53,7 +53,7 @@ export const useCreateModStore = defineStore('createMod', {
     setAdditionalLinks(additionalLinks: {name: string, url: string}[]) {
       this.additionalLinks = additionalLinks
     },
-    setImages(images: File[]) {
+    setImages(images: (File | string)[]) {
       this.images = images
     },
     drop() {
@@ -67,6 +67,17 @@ export const useCreateModStore = defineStore('createMod', {
       this.downloadLink = ''
       this.additionalLinks = []
       this.images = []
+    },
+    loadFromData(data: UseCreateModStoreInterface) {
+      this.type = data.type
+      this.name = data.name
+      this.shortDescription = data.shortDescription
+      this.description = data.description
+      this.installGuide = data.installGuide
+      this.tags = data.tags
+      this.downloadLink = data.downloadLink
+      this.additionalLinks = data.additionalLinks
+      this.images = data.images
     }
   },
   getters: {

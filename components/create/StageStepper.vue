@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const props = defineProps<{
-  activeStep: number
+  activeStep: number,
+  links?: string[],
+  isModifying?: boolean
 }>()
 
 const labels = [
@@ -9,6 +11,16 @@ const labels = [
   'Информация о моде',
   'Настройка ссылок'
 ]
+
+if (props.isModifying) labels.shift()
+
+const go = (index: number) => {
+  if (!props.links|| !props.links.length) return
+
+  console.log('go to', props.links[index])
+  useRouter().push(props.links![index])
+
+}
 </script>
 
 <template>
@@ -17,8 +29,11 @@ const labels = [
       class="flex flex-row items-center gap-2" v-for="(item, index) in labels" :key="index" :class="{
         'active-step': index === props.activeStep - 1,
         'innactive-step': index > props.activeStep - 1,
-        'passed-step': index < props.activeStep - 1
-      }">
+        'passed-step': index < props.activeStep - 1,
+        'cursor-pointer': props.links !== undefined && !!props.links.length
+      }"
+      @click="go(index)"
+    >
       <div
         class="w-7 h-7 text-center font-medium text-lg rounded-md items-center justify-center flex">
         {{ index + 1 }}

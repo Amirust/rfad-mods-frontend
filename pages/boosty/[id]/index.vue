@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useModsApi } from '~/composables/useModsApi';
 import type { Mod } from '~/types/api/mods.types';
-import resolveModTagsUtil from '../../utils/resolveModTags.util';
+import resolveModTagsUtil from '../../../utils/resolveModTags.util';
 import ModTag from '~/components/base/ModTag.vue';
 import UserSmallInfo from '~/components/base/UserSmallInfo.vue';
 import ModPageInfoSkeleton from '~/components/mods/ModPageInfoSkeleton.vue';
-import resolveMDUtil from '../../utils/resolveMD.util';
+import resolveMDUtil from '../../../utils/resolveMD.util';
 import Button from '~/components/base/Button.vue';
 import ModPageDescSkeleton from '~/components/mods/ModPageDescSkeleton.vue';
 import { ErrorCode } from '~/types/api/ErrorCode.enum';
+import { useBoostyApi } from '~/composables/useBoostyApi';
 
 const route = useRoute();
 const router = useRouter();
@@ -18,6 +18,7 @@ const tagsCount = route.query.tagsCount ? +route.query.tagsCount : 3;
 if (!id) router.back();
 
 const isLoading = ref(true);
+const userCanModify = ref(false);
 
 const mod = ref<Mod | null>(null);
 
@@ -25,12 +26,13 @@ const loadMod = async () => {
   isLoading.value = true;
 
   try {
-    mod.value = await useModsApi().findOne(id);
+    mod.value = await useBoostyApi().findOne(id);
   } catch (e: any) {
-    console.log(e.errorCode);
     if (e?.errorCode === ErrorCode.ModNotFound) {
       if (window.history.length > 1) router.back();
-      else return router.push('/mods');
+      else return router.push('/boosty');
+    } else if (e?.errorCode === ErrorCode.UserHasNoBoostyAccess) {
+      return router.push('/boosty');
     }
   }
 
@@ -41,6 +43,14 @@ const loadMod = async () => {
 
 onMounted(async () => {
   await loadMod();
+
+  useBoostyApi().getModifyData(id).catch(e => {
+    if (e.errorCode === ErrorCode.ModNotOwned)
+      userCanModify.value = false;
+    throw e;
+  }).then(() => {
+    userCanModify.value = true;
+  });
 });
 </script>
 
@@ -87,7 +97,7 @@ onMounted(async () => {
         <template v-if="!isLoading && mod">
           <div class="w-full h-full flex flex-col gap-6">
             <div v-if="mod.images.length" class="flex flex-col xl:flex-row gap-4">
-              <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md" v-for="img in mod.images" :key="img" :src="img" placeholder />
+              <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md object-cover" v-for="img in mod.images" :key="img" :src="img" placeholder />
             </div>
             <div>
               <h3 class="text-2xl font-medium text-secondary">Описание</h3>
@@ -98,6 +108,11 @@ onMounted(async () => {
               <div v-html="resolveMDUtil(mod.installGuide)" class="text-xl font-light"></div>
             </div>
             <div class="flex flex-row gap-x-6">
+              <NuxtLink :to="`/boosty/${mod.id}/modify`" v-if="userCanModify">
+                <Button class="h-full items-center flex">
+                  <LucideSettings/>
+                </Button>
+              </NuxtLink>
               <a :href="resolveDownloadModUrl(mod.id)" target="_blank">
                 <Button>Скачать</Button>
               </a>

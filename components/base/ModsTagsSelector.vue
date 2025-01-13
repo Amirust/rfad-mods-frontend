@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { ModTagList } from '~/locale/mod.tags';
+import { resolveModTagsCategory } from '~/utils/resolveModTags.util';
+import type { ModTags } from '~/types/mod-tags.enum';
 
 const emit = defineEmits<{
   (e: 'update:value', value: number[]): void;
 }>();
 
 const selectedCategory = ref<string | null>(null);
-const selectedTags = ref<number[]>([]);
+const selectedTags = defineModel<ModTags[]>({
+  required: true
+});
+
+const isInitialized = ref(false);
 
 const categories = computed(() => {
   if (selectedCategory.value !== null) return [ selectedCategory.value ];
@@ -44,6 +50,15 @@ const toggleTag = (tag: number) => {
 const resolveCategoryFromName = (name: string) => {
   return ModTagList.find(item => item.values.some(e => e.label === name))?.values.find(e => e.label === name);
 };
+
+watch(selectedTags, () => {
+  if (!isInitialized.value) {
+    const { category } = resolveModTagsCategory(selectedTags.value);
+    if (category) selectedCategory.value = category;
+  }
+
+  isInitialized.value = true;
+});
 </script>
 
 <template>

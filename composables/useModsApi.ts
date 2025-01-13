@@ -36,9 +36,32 @@ export const useModsApi = () => {
     else throw new Error
   }
 
+  const getModifyData = async (id: string) => {
+    const { error, data } = await useApiFetch<ApiResponse<Mod>>(Endpoints.getModifyModData(id))
+
+    if (error.value) resolveError(error.value.data)
+
+    if (data.value) return data.value.result
+    else throw new Error('No data')
+  }
+
+  const modify = async (id: string, body: Partial<CreateMod>) => {
+    const { error, data } = await useApiFetch<ApiResponse<Mod>>(Endpoints.modifyMod(id), {
+      method: 'PATCH',
+      body: JSON.stringify(body)
+    })
+
+    if (error.value) resolveError(error.value.data)
+
+    if (data.value) return data.value.result
+    else throw new Error
+  }
+
   return {
     findOne,
     findAll,
-    createMod
+    createMod,
+    getModifyData,
+    modify
   }
 }

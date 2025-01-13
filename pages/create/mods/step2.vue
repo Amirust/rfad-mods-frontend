@@ -14,7 +14,7 @@ const router = useRouter()
 
 const isModDescriptionValid = ref(false)
 const isModInstallGuideValid = ref(false)
-const modImages = ref<File[]>([])
+const modImages = ref<(string | File)[]>([])
 const isModImagesValid = computed(() => modImages.value.length > 0)
 
 const descriptionFocused = ref(false)

@@ -6,14 +6,17 @@ const props = defineProps<{
   remainingFiles: number
 }>()
 
-const selectedImages = defineModel<File[]>({
+const selectedImages = defineModel<(string | File)[]>({
   required: true
 })
 
 const maxFiles = ref(Limits.MaxImagesPerMod)
 
 const displayImages = computed(() => {
-  return selectedImages.value.map((img) => URL.createObjectURL(img))
+  return selectedImages.value.map((img) => {
+    if (typeof img === 'string') return img
+    return URL.createObjectURL(img)
+  })
 })
 
 const canUpload = ref(true)
