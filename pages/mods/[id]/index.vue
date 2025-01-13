@@ -95,7 +95,7 @@ onMounted(async () => {
       <transition name="fade">
         <template v-if="!isLoading && mod">
           <div class="w-full h-full flex flex-col gap-6">
-            <div v-if="mod.images.length" class="flex flex-col xl:flex-row gap-4">
+            <div v-if="mod.images.length" class="flex flex-col xl:flex-row gap-4 flex-wrap">
               <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md object-cover" v-for="img in mod.images" :key="img" :src="img" placeholder />
             </div>
             <div>
@@ -107,7 +107,7 @@ onMounted(async () => {
               <div v-html="resolveMDUtil(mod.installGuide)" class="text-xl font-light"></div>
             </div>
             <div class="flex flex-row gap-x-6">
-              <NuxtLink :to="`/mods/${mod.id}/modify`" v-if="userCanModify">
+              <NuxtLink class="hidden xl:block" :to="`/mods/${mod.id}/modify`" v-if="userCanModify">
                 <Button class="h-full items-center flex">
                   <LucideSettings/>
                 </Button>
@@ -132,21 +132,4 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .3s, transform .3s;
-}
-.fade-move {
-  transition: transform .3s;
-}
-.fade-leave-active {
-  position: absolute;
-  top: 0;
-  transform: translateY(0);
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(0);
-}
 </style>

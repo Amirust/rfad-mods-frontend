@@ -96,7 +96,7 @@ onMounted(async () => {
       <transition name="fade">
         <template v-if="!isLoading && mod">
           <div class="w-full h-full flex flex-col gap-6">
-            <div v-if="mod.images.length" class="flex flex-col xl:flex-row gap-4">
+            <div v-if="mod.images.length" class="flex flex-col flex-wrap xl:flex-row gap-4">
               <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md object-cover" v-for="img in mod.images" :key="img" :src="img" placeholder />
             </div>
             <div>
@@ -116,7 +116,7 @@ onMounted(async () => {
               <a :href="resolveDownloadModUrl(mod.id)" target="_blank">
                 <Button>Скачать</Button>
               </a>
-              <NuxtLink v-for="m in mod.additionalLinks" :to="m.url" target="_blank">
+              <NuxtLink class="hidden xl:block" v-for="m in mod.additionalLinks" :to="m.url" target="_blank">
                 <Button >
                   {{ m.name }}
                 </Button>
@@ -133,21 +133,4 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .3s, transform .3s;
-}
-.fade-move {
-  transition: transform .3s;
-}
-.fade-leave-active {
-  position: absolute;
-  top: 0;
-  transform: translateY(0);
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(0);
-}
 </style>

@@ -129,14 +129,14 @@ onMounted(async () => {
       <div class="flex flex-row gap-14 align-baseline">
         <div class="flex flex-col gap-9 min-w-max">
           <div class="flex flex-col">
-            <h4 class="text-xl font-light text-secondary">СТРАНИЦА 2</h4>
+            <h4 class="text-xl font-light text-secondary">Другие страницы?</h4>
             <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
           <StageStepper :links="resolveModifyLinks(modId, 'boosty')" :is-modifying="true" :active-step="2"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">
-            <h4 class="text-xl font-light text-secondary">ШАГ 3</h4>
+            <h4 class="text-xl font-light text-secondary">СТРАНИЦА 2</h4>
             <h3 class="text-3xl font-normal text-primary uppercase">Информация о моде</h3>
           </div>
           <div class="flex flex-col gap-7">

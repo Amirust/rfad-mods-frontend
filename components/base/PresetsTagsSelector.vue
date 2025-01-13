@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { type PresetTag, PresetTagList } from '~/locale/presets.tags';
 
-const emit = defineEmits<{
-  (e: 'update:value', value: number[]): void;
-}>();
-
 const selectedTags = defineModel<number[]>({
   required: true
 });
@@ -45,21 +41,4 @@ const toggleTag = (tag: number) => {
 </template>
 
 <style scoped lang="scss">
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
-}
-.fade-move {
-  transition: transform 0.3s;
-}
-.fade-leave-active {
-  position: absolute;
-  top: 0;
-  transform: translateY(0);
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(0);
-}
 </style>

@@ -57,19 +57,33 @@ onMounted(async () => {
 
 
 <style scoped>
-.transition-page-enter-active,
-.transition-page-leave-active {
-  transition: 0.25s;
-  transform-origin: center 96px;
+@media (prefers-reduced-motion: reduce) {
+  .transition-page-enter-active,
+  .transition-page-leave-active {
+    transition: none;
+  }
+  .transition-page-enter-from,
+  .transition-page-leave-to {
+    opacity: 1;
+    transform: none;
+  }
 }
-.transition-page-leave-active {
-  position: relative;
-}
-.transition-page-enter-from {
-  opacity: 0;
-  transform: scale(0.99);
-}
-.transition-page-leave-to {
-  opacity: 0;
+
+@media (prefers-reduced-motion: no-preference) {
+  .transition-page-enter-active,
+  .transition-page-leave-active {
+    transition: 0.25s;
+    transform-origin: center 96px;
+  }
+  .transition-page-leave-active {
+    position: relative;
+  }
+  .transition-page-enter-from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  .transition-page-leave-to {
+    opacity: 0;
+  }
 }
 </style>
