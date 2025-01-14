@@ -12,10 +12,12 @@ export default {
   theme: {
     extend: {
       screens: {
-        '2k': '2048px',
-        '4k': '3840px',
-        '3xl': '1860px'
         // => @media (min-width: 1860px) { ... }
+        '3xl': '1860px',
+        // => @media (min-width: 1988px) { ... }
+        '2k': '1988px',
+        // => @media (min-width: 2500px) { ... }
+        '4k': '2500px'
       },
       spacing: {
         18: '4.5rem',

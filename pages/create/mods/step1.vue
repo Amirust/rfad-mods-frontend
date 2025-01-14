@@ -51,7 +51,6 @@ const shortDescriptionValidator = (value: string) => {
 
 onMounted(() => {
   if (useCreateModStore().isDropped) return router.push('/create')
-  useCreateModStore().drop()
 
   if (createModStore.name) modName.value = createModStore.getName
   if (createModStore.shortDescription) modShortDescription.value = createModStore.getShortDescription
