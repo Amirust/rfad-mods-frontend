@@ -7,6 +7,9 @@ import { useAuthStore } from '~/store/useAuthStore';
 import { useModsApi } from '~/composables/useModsApi';
 import { usePresetsApi } from '~/composables/usePresetsApi';
 
+export type FileType = {url: string | File, orientation: 'vertical' | 'horizontal'}
+export type FileTypeString = {url: string, orientation: 'vertical' | 'horizontal'}
+
 export interface UseCreateModStoreInterface {
   type: 'mod' | 'preset' | null
   name: string
@@ -16,7 +19,7 @@ export interface UseCreateModStoreInterface {
   tags: ModTags[] | PresetTags[]
   downloadLink: string
   additionalLinks: {name: string, url: string}[]
-  images: (File | string)[],
+  images: FileType[],
   isDropped: boolean
 }
 
@@ -58,7 +61,7 @@ export const useCreateModStore = defineStore('createMod', {
     setAdditionalLinks(additionalLinks: {name: string, url: string}[]) {
       this.additionalLinks = additionalLinks
     },
-    setImages(images: (File | string)[]) {
+    setImages(images: FileType[]) {
       this.images = images
     },
     drop() {
@@ -86,16 +89,22 @@ export const useCreateModStore = defineStore('createMod', {
       this.isDropped = data.isDropped
     },
     async uploadInfo(id: string) {
-      const images = [];
+      const images: FileTypeString[] = [];
 
       for await (const file of this.getImages) {
-        if (typeof file === 'string') {
-          images.push(file)
+        if(typeof file.url === 'string') {
+          images.push({
+            url: file.url,
+            orientation: file.orientation
+          })
           continue
         }
 
-        const { hash } = await useFilesApi().uploadFile(file as File)
-        images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
+        const { hash } = await useFilesApi().uploadFile(file.url as File)
+        images.push({
+          url: resolveCDNImage(useAuthStore().getUser!.id, hash, false),
+          orientation: file.orientation
+        })
       }
 
       if (this.type === 'preset') await usePresetsApi().modify(id, {

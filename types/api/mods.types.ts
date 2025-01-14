@@ -21,7 +21,7 @@ export interface CreateMod {
   tags: ModTags[]
   downloadLink: string
   additionalLinks: AdditionalLink[]
-  images: string[]
+  images: {url: string, orientation: 'vertical' | 'horizontal'}[]
 }
 
 

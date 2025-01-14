@@ -9,6 +9,8 @@ import resolveCDNImage from '~/utils/resolveCDNImage';
 import { useAuthStore } from '~/store/useAuthStore';
 import type { ModTags } from '~/types/mod-tags.enum';
 import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
+import { useFilesApi } from '~/composables/useFilesApi';
+import type { FileTypeString } from '~/store/useCreateModStore';
 
 const createModStore = useCreateBoostyModStore()
 const router = useRouter()
@@ -33,16 +35,22 @@ const go = async () => {
   createModStore.setDownloadLink(downloadLink.value)
   createModStore.setAdditionalLinks(links.value)
 
-  const images = []
+  const images: FileTypeString[] = [];
 
   for await (const file of createModStore.getImages) {
-    if (typeof file === 'string') {
-      images.push(file)
+    if(typeof file.url === 'string') {
+      images.push({
+        url: file.url,
+        orientation: file.orientation
+      })
       continue
     }
 
-    const { hash } = await useFilesApi().uploadFile(file)
-    images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
+    const { hash } = await useFilesApi().uploadFile(file.url as File)
+    images.push({
+      url: resolveCDNImage(useAuthStore().getUser!.id, hash, false),
+      orientation: file.orientation
+    })
   }
 
   const data = await useBoostyApi().createBoostyMod({

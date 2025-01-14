@@ -5,9 +5,10 @@ import { BoostyTierEnum } from '~/types/boosty-tier.enum';
 import { useFilesApi } from '~/composables/useFilesApi';
 import resolveCDNImage from '~/utils/resolveCDNImage';
 import { useAuthStore } from '~/store/useAuthStore';
-import { usePresetsApi } from '~/composables/usePresetsApi';
-import { useModsApi } from '~/composables/useModsApi';
 import { useBoostyApi } from '~/composables/useBoostyApi';
+
+type FileType = {url: string | File, orientation: 'vertical' | 'horizontal'}
+type FileTypeString = {url: string, orientation: 'vertical' | 'horizontal'}
 
 export interface UseCreateModStoreInterface {
   name: string
@@ -17,7 +18,7 @@ export interface UseCreateModStoreInterface {
   tags: ModTags[] | PresetTags[]
   downloadLink: string
   additionalLinks: {name: string, url: string}[]
-  images: (string | File)[],
+  images: FileType[],
   requiredTier: BoostyTierEnum | null,
   isDropped: boolean,
 }
@@ -57,7 +58,7 @@ export const useCreateBoostyModStore = defineStore('createBoostyMod', {
     setAdditionalLinks(additionalLinks: {name: string, url: string}[]) {
       this.additionalLinks = additionalLinks
     },
-    setImages(images: (string | File)[]) {
+    setImages(images: FileType[]) {
       this.images = images
     },
     setMinimalTier(minimalTier: BoostyTierEnum) {
@@ -90,16 +91,22 @@ export const useCreateBoostyModStore = defineStore('createBoostyMod', {
     async uploadInfo(id: string) {
       if (!this.requiredTier) return;
 
-      const images = [];
+      const images: FileTypeString[] = [];
 
       for await (const file of this.getImages) {
-        if (typeof file === 'string') {
-          images.push(file)
+        if(typeof file.url === 'string') {
+          images.push({
+            url: file.url,
+            orientation: file.orientation
+          })
           continue
         }
 
-        const { hash } = await useFilesApi().uploadFile(file as File)
-        images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
+        const { hash } = await useFilesApi().uploadFile(file.url as File)
+        images.push({
+          url: resolveCDNImage(useAuthStore().getUser!.id, hash, false),
+          orientation: file.orientation
+        })
       }
 
       await useBoostyApi().modify(id, {

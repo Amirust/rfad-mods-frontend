@@ -13,7 +13,7 @@ const tags = resolvedTags.other.length
 <template>
   <NuxtLink :to="`/presets/${props.preset.id}?tagsCount=${tags}&racesCount=${races}`">
     <div class="w-full h-full max-h-80 relative rounded-md">
-      <NuxtImg class="w-full h-full mask rounded-md" :src="preset.images[0]" placeholder/>
+      <NuxtImg class="w-full h-full mask rounded-md" :src="preset.images[0].url" placeholder/>
       <div class="absolute bottom-0 left-0">
         <div class="mx-3">
           <h1 class="text-3xl text-primary font-light mb-1">{{ props.preset.name }}</h1>

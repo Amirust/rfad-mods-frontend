@@ -119,7 +119,7 @@ onMounted(async () => {
                 <h5 class="text-base leading-tight font-light text-secondary">Выберите какой тир нужен человеку, чтобы скачать этот мод</h5>
               </div>
               <div class="w-full">
-                <BoostyTierSelector @update:value="value => selectedTier = value" />
+                <BoostyTierSelector v-model="selectedTier" />
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">

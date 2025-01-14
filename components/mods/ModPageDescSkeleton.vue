@@ -5,7 +5,8 @@ import Skeleton from '~/components/base/Skeleton.vue';
 <template>
   <div class="w-full h-full flex flex-col gap-6">
     <div class="flex flex-row gap-x-4">
-      <div class="w-72 h-40" v-for="img in 3" :key="img">
+      <div class="w-full xl:w-40 xl:h-52"><Skeleton /></div>
+      <div v-for="img in 3" :key="img" class="w-full h-full xl:w-72">
         <Skeleton class="rounded-md" />
       </div>
     </div>
