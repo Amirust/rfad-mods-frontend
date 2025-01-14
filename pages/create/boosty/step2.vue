@@ -8,13 +8,14 @@ import ImagesInput from '~/components/base/ImagesInput.vue';
 import { useFilesApi } from '~/composables/useFilesApi';
 import AnimateHeight from 'vue-animate-height';
 import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
+import type { FileType } from '~/store/useCreateModStore';
 
 const createModStore = useCreateBoostyModStore()
 const router = useRouter()
 
 const isModDescriptionValid = ref(false)
 const isModInstallGuideValid = ref(false)
-const modImages = ref<(string | File)[]>([])
+const modImages = ref<FileType[]>([])
 const isModImagesValid = computed(() => modImages.value.length > 0)
 
 const descriptionFocused = ref(false)

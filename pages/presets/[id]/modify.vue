@@ -156,7 +156,7 @@ onMounted(async () => {
                 <h2 class="text-3xl font-light text-primary">Раса</h2>
                 <h5 class="text-base leading-tight font-light text-secondary">Выберите расу под которую был создан ваш пресет</h5>
               </div>
-              <PresetsRaceSelector v-model="selectedRace" @update:value="value => selectedRace = value" />
+              <PresetsRaceSelector v-model="selectedRace" />
             </div>
             <div class="flex flex-row gap-20 w-full">
               <div class="flex flex-col max-w-60 w-full gap-1">
@@ -164,7 +164,7 @@ onMounted(async () => {
                 <h5 class="text-base leading-tight font-light text-secondary">Выберите расу под которую был создан ваш пресет</h5>
               </div>
               <div class="w-full">
-                <PresetsTagsSelector v-model="selectedTags" @update:value="value => selectedTags = value" />
+                <PresetsTagsSelector v-model="selectedTags" />
               </div>
             </div>
             <div class="w-full flex flex-row justify-end gap-7">

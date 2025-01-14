@@ -14,6 +14,7 @@ import { useBoostyApi } from '~/composables/useBoostyApi';
 import { ErrorCode } from '~/types/api/ErrorCode.enum';
 import { useEditManager } from '~/store/useEditManager';
 import { useCreateBoostyModStore } from '~/store/useCreateBoostyModStore';
+import type { FileType } from '~/store/useCreateModStore';
 
 const editStore = useCreateBoostyModStore()
 const router = useRouter()
@@ -23,7 +24,7 @@ const modId = route.params.id.toString()
 
 const isModDescriptionValid = ref(false)
 const isModInstallGuideValid = ref(false)
-const modImages = ref<(string | File)[]>([])
+const modImages = ref<FileType[]>([])
 const isModImagesValid = computed(() => modImages.value.length > 0)
 
 const descriptionFocused = ref(false)

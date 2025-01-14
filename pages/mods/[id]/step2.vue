@@ -2,15 +2,13 @@
 
 import StageStepper from '~/components/create/StageStepper.vue';
 import Button from '~/components/base/Button.vue';
-import { useCreateModStore } from '~/store/useCreateModStore';
+import { type FileType, useCreateModStore } from '~/store/useCreateModStore';
 import { Limits } from '~/types/limits.enum';
 import CustomTextarea from '~/components/base/CustomTextarea.vue';
 import ImagesInput from '~/components/base/ImagesInput.vue';
 import { useFilesApi } from '~/composables/useFilesApi';
 import AnimateHeight from 'vue-animate-height';
 import resolveModifyLinks from '~/utils/resolveModifyLinks';
-import resolveCDNImage from '~/utils/resolveCDNImage';
-import { useAuthStore } from '~/store/useAuthStore';
 import { useModsApi } from '~/composables/useModsApi';
 import { ErrorCode } from '~/types/api/ErrorCode.enum';
 import { useEditManager } from '~/store/useEditManager';
@@ -23,7 +21,7 @@ const modId = route.params.id.toString()
 
 const isModDescriptionValid = ref(false)
 const isModInstallGuideValid = ref(false)
-const modImages = ref<(string | File)[]>([])
+const modImages = ref<FileType[]>([])
 const isModImagesValid = computed(() => modImages.value.length > 0)
 
 const descriptionFocused = ref(false)
@@ -100,6 +98,8 @@ onMounted(async () => {
       isDropped: false
     })
   useEditManager().setEditId(modId)
+
+  console.log(editStore.images)
 
   if (editStore.description) modDescription.value = editStore.getDescription
   if (editStore.installGuide) modInstallGuide.value = editStore.getInstallGuide

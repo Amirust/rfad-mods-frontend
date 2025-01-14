@@ -9,6 +9,7 @@ import Button from '~/components/base/Button.vue';
 import ModPageDescSkeleton from '~/components/mods/ModPageDescSkeleton.vue';
 import { ErrorCode } from '~/types/api/ErrorCode.enum';
 import { useBoostyApi } from '~/composables/useBoostyApi';
+import ModImagesList from '~/components/base/ModImagesList.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -96,15 +97,7 @@ onMounted(async () => {
       <transition name="fade">
         <template v-if="!isLoading && mod">
           <div class="w-full h-full flex flex-col gap-6">
-            <div v-if="mod.images.length" class="flex flex-col flex-wrap xl:flex-row gap-4">
-              <NuxtLink
-                v-for="img in mod.images" :key="img"
-                :to="img"
-                target="_blank"
-              >
-                <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md object-cover" :src="img" placeholder />
-              </NuxtLink>
-            </div>
+            <ModImagesList v-if="mod.images.length" :images="mod.images"/>
             <div>
               <h3 class="text-2xl font-medium text-secondary">Описание</h3>
               <div v-html="resolveMDUtil(mod.description)" class="text-xl font-light whitespace-pre-wrap "></div>

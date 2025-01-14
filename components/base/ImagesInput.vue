@@ -2,11 +2,13 @@
 import { LucideTrash } from 'lucide-vue-next';
 import { Limits } from '~/types/limits.enum';
 
+type FileType = {url: string | File, orientation: 'vertical' | 'horizontal'}
+
 const props = defineProps<{
   remainingFiles: number
 }>()
 
-const selectedImages = defineModel<(string | File)[]>({
+const selectedImages = defineModel<FileType[]>({
   required: true
 })
 
@@ -14,18 +16,41 @@ const maxFiles = ref(Limits.MaxImagesPerMod)
 
 const displayImages = computed(() => {
   return selectedImages.value.map((img) => {
-    if (typeof img === 'string') return img
-    return URL.createObjectURL(img)
+    if (typeof img.url === 'string') return img.url
+    return URL.createObjectURL(img.url)
   })
 })
 
 const canUpload = ref(true)
 
 const upload = async (file: File) => {
-  selectedImages.value.push(file)
+  const img = new Image()
+  const url = URL.createObjectURL(file)
+  img.src = url
 
-  if (selectedImages.value.length >= Limits.MaxImagesPerMod || selectedImages.value.length >= maxFiles.value)
-    canUpload.value = false
+  const loadImage = () => {
+    return new Promise<{ width: number, height: number }>((resolve, reject) => {
+      img.onload = () => {
+        resolve({ width: img.width, height: img.height })
+        URL.revokeObjectURL(url)
+      }
+      img.onerror = reject
+    })
+  }
+
+  try {
+    const { width, height } = await loadImage()
+
+    selectedImages.value.push({
+      url: file,
+      orientation: width > height ? 'horizontal' : 'vertical'
+    })
+
+    if (selectedImages.value.length >= Limits.MaxImagesPerMod || selectedImages.value.length >= maxFiles.value)
+      canUpload.value = false
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 const removeImage = async (index: number) => {

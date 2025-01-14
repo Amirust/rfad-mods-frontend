@@ -36,7 +36,7 @@ const loadMod = async () => {
     }
   }
 
-  // await waitUtil(150);
+  // await waitUtil(4000);
 
   isLoading.value = false;
 }

@@ -8,7 +8,7 @@ interface RequiredValues {
   id: string,
   name: string,
   shortDescription: string,
-  images: string[],
+  images: {url: string, orientation: 'vertical' | 'horizontal'}[],
   author: PublicPartialUser,
   downloads: number,
   lastUpdate: Date,
@@ -35,7 +35,7 @@ onMounted(async () => {
   <div class="relative">
     <transition name="fade">
       <NuxtLink :to="url" v-if="mod" class="h-full w-full">
-        <NuxtImg class="w-full h-full mask" :src="mod.images[0]" placeholder/>
+        <NuxtImg class="w-full h-full mask" :src="mod.images[0].url" placeholder/>
         <div class="absolute bottom-0 left-0">
           <div class="mx-3">
             <h1 class="text-3xl text-primary font-light mb-1">{{mod.name}}</h1>
