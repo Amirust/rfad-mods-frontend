@@ -64,9 +64,14 @@ onMounted(() => {
                 alt="avatar"
                 class="w-12 h-12 rounded-md"
               />
-              <span class="text-primary uppercase text-3xl text-ellipsis overflow-hidden text-nowrap">
-                {{ user.globalName }}
-              </span>
+              <div class="w-full flex flex-col gap-0">
+                <span class="text-primary uppercase text-3xl text-ellipsis overflow-hidden text-nowrap">
+                  {{ user.globalName }}
+                </span>
+                <span class="text-secondary mt-[-7px] text-ellipsis overflow-hidden text-nowrap">
+                  @{{ user.username }}
+                </span>
+              </div>
             </div>
             <div class="flex flex-col gap-1">
               <h3 class="text-2xl font-medium text-secondary">Моды</h3>
