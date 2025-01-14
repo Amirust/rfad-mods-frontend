@@ -7,6 +7,7 @@ import type { Preset } from '~/types/api/presets.types';
 import ModTag from '~/components/base/ModTag.vue';
 import PresetPageDescSkeleton from '~/components/presets/PresetPageDescSkeleton.vue';
 import PresetPageInfoSkeleton from '~/components/presets/PresetPageInfoSkeleton.vue';
+import ModImagesList from '~/components/base/ModImagesList.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -106,15 +107,7 @@ onMounted(async () => {
       <transition name="fade">
         <template v-if="!isLoading && preset">
           <div class="w-full h-full flex flex-col gap-6">
-            <div v-if="preset.images.length" class="flex flex-col xl:flex-row gap-4 flex-wrap">
-              <NuxtLink
-                v-for="img in preset.images" :key="img"
-                :to="img"
-                target="_blank"
-              >
-                <NuxtImg class="w-full xl:w-72 xl:h-40 rounded-md object-cover" :src="img" placeholder />
-              </NuxtLink>
-            </div>
+            <ModImagesList v-if="preset.images.length" :images="preset.images"/>
             <div>
               <h3 class="text-2xl font-medium text-secondary">Описание</h3>
               <div v-html="resolveMDUtil(preset.description)" class="text-xl font-light whitespace-pre-wrap "></div>

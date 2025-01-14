@@ -17,7 +17,6 @@ if (props.isModifying) labels.shift()
 const go = (index: number) => {
   if (!props.links|| !props.links.length) return
 
-  console.log('go to', props.links[index])
   useRouter().push(props.links![index])
 
 }

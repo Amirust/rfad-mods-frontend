@@ -32,6 +32,11 @@ const isLoading = ref(false)
 
 const baseUrl = computed(() => `/mods/${modId}`)
 
+const saveAll = () => {
+  editStore.setDownloadLink(downloadLink.value)
+  editStore.setAdditionalLinks(links.value)
+}
+
 const go = async () => {
   if (!isButtonActive.value && useAuthStore().getUser?.id) return
 
@@ -40,10 +45,8 @@ const go = async () => {
   editStore.setDownloadLink(downloadLink.value)
   editStore.setAdditionalLinks(links.value)
 
-  useModsApi().modify(modId, {
-    downloadLink: downloadLink.value,
-    additionalLinks: links.value
-  }).then(() => {
+  editStore.uploadInfo(modId).then(() => {
+    isLoading.value = false
     router.push(baseUrl.value)
   })
 }
@@ -77,11 +80,12 @@ onMounted(async () => {
 
   if (!data) return;
 
-  editStore.loadFromData({
-    type: 'mod',
-    ...data,
-    isDropped: false
-  })
+  if (editStore.isDropped)
+    editStore.loadFromData({
+      type: 'mod',
+      ...data,
+      isDropped: false
+    })
 
   useEditManager().setEditId(modId)
 
@@ -100,7 +104,7 @@ onMounted(async () => {
             <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
             <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :links="resolveModifyLinks(modId, 'mods')" :is-modifying="true" :active-step="3"/>
+          <StageStepper @click="saveAll" :links="resolveModifyLinks(modId, 'mods')" :is-modifying="true" :active-step="3"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">

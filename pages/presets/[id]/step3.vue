@@ -32,6 +32,11 @@ const isLoading = ref(false)
 
 const baseUrl = computed(() => `/presets/${modId}`)
 
+const saveAll = () => {
+  editStore.setDownloadLink(downloadLink.value)
+  editStore.setAdditionalLinks(links.value)
+}
+
 const go = async () => {
   if (!isButtonActive.value && useAuthStore().getUser?.id) return
 
@@ -77,11 +82,12 @@ onMounted(async () => {
 
   if (!data) return;
 
-  editStore.loadFromData({
-    type: 'preset',
-    ...data,
-    isDropped: false
-  })
+  if (editStore.isDropped)
+    editStore.loadFromData({
+      type: 'preset',
+      ...data,
+      isDropped: false
+    })
 
   useEditManager().setEditId(modId)
 
@@ -100,7 +106,7 @@ onMounted(async () => {
             <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
             <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :links="resolveModifyLinks(modId, 'presets')" :is-modifying="true" :active-step="3"/>
+          <StageStepper @click="saveAll" :links="resolveModifyLinks(modId, 'presets')" :is-modifying="true" :active-step="3"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">

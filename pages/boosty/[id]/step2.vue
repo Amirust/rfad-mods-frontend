@@ -42,6 +42,12 @@ const baseUrl = computed(() => `/boosty/${modId}`)
 
 const isLoading = ref(false)
 
+const saveAll = () => {
+  editStore.setDescription(modDescription.value)
+  editStore.setInstallGuide(modInstallGuide.value)
+  editStore.setImages(modImages.value)
+}
+
 const go = async () => {
   if (!isButtonActive.value) return
 
@@ -63,11 +69,7 @@ const go = async () => {
     images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
   }
 
-  useBoostyApi().modify(modId, {
-    description: modDescription.value,
-    installGuide: modInstallGuide.value,
-    images
-  }).then(() => {
+  editStore.uploadInfo(modId).then(() => {
     isLoading.value = false
     router.push(baseUrl.value)
   })
@@ -103,10 +105,11 @@ onMounted(async () => {
 
   if (!proof) return;
 
-  editStore.loadFromData({
-    ...proof,
-    isDropped: false
-  })
+  if (editStore.isDropped)
+    editStore.loadFromData({
+      ...proof,
+      isDropped: false
+    })
 
   useEditManager().setEditId(modId)
 
@@ -132,7 +135,7 @@ onMounted(async () => {
             <h4 class="text-xl font-light text-secondary">Другие страницы?</h4>
             <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :links="resolveModifyLinks(modId, 'boosty')" :is-modifying="true" :active-step="2"/>
+          <StageStepper @click="saveAll" :links="resolveModifyLinks(modId, 'boosty')" :is-modifying="true" :active-step="2"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">

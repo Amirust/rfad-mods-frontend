@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia';
 import type { ModTags } from '~/types/mod-tags.enum';
 import type { PresetTags } from '~/types/preset-tags.enum';
+import { useFilesApi } from '~/composables/useFilesApi';
+import resolveCDNImage from '~/utils/resolveCDNImage';
+import { useAuthStore } from '~/store/useAuthStore';
+import { useModsApi } from '~/composables/useModsApi';
+import { usePresetsApi } from '~/composables/usePresetsApi';
 
 export interface UseCreateModStoreInterface {
   type: 'mod' | 'preset' | null
@@ -78,6 +83,43 @@ export const useCreateModStore = defineStore('createMod', {
       this.downloadLink = data.downloadLink
       this.additionalLinks = data.additionalLinks
       this.images = data.images
+      this.isDropped = data.isDropped
+    },
+    async uploadInfo(id: string) {
+      const images = [];
+
+      for await (const file of this.getImages) {
+        if (typeof file === 'string') {
+          images.push(file)
+          continue
+        }
+
+        const { hash } = await useFilesApi().uploadFile(file as File)
+        images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
+      }
+
+      if (this.type === 'preset') await usePresetsApi().modify(id, {
+        name: this.name,
+        shortDescription: this.shortDescription,
+        description: this.description,
+        installGuide: this.installGuide,
+        tags: this.tags as PresetTags[],
+        downloadLink: this.downloadLink,
+        additionalLinks: this.additionalLinks,
+        images: images
+      })
+      else if (this.type === 'mod') await useModsApi().modify(id, {
+        name: this.name,
+        shortDescription: this.shortDescription,
+        description: this.description,
+        installGuide: this.installGuide,
+        tags: this.tags as ModTags[],
+        downloadLink: this.downloadLink,
+        additionalLinks: this.additionalLinks,
+        images: images
+      })
+
+      this.drop()
     }
   },
   getters: {

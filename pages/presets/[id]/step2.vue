@@ -42,6 +42,12 @@ const baseUrl = computed(() => `/presets/${modId}`)
 
 const isLoading = ref(false)
 
+const saveAll = () => {
+  editStore.setDescription(modDescription.value)
+  editStore.setInstallGuide(modInstallGuide.value)
+  editStore.setImages(modImages.value)
+}
+
 const go = async () => {
   if (!isButtonActive.value) return
 
@@ -51,23 +57,7 @@ const go = async () => {
   editStore.setInstallGuide(modInstallGuide.value)
   editStore.setImages(modImages.value)
 
-  const images = []
-
-  for await (const file of editStore.getImages) {
-    if (typeof file === 'string') {
-      images.push(file)
-      continue
-    }
-
-    const { hash } = await useFilesApi().uploadFile(file as File)
-    images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
-  }
-
-  usePresetsApi().modify(modId, {
-    description: modDescription.value,
-    installGuide: modInstallGuide.value,
-    images
-  }).then(() => {
+  await editStore.uploadInfo(modId).then(() => {
     isLoading.value = false
     router.push(baseUrl.value)
   })
@@ -103,11 +93,12 @@ onMounted(async () => {
 
   if (!proof) return;
 
-  editStore.loadFromData({
-    type: 'preset',
-    ...proof,
-    isDropped: false
-  })
+  if (editStore.isDropped)
+    editStore.loadFromData({
+      type: 'preset',
+      ...proof,
+      isDropped: false
+    })
 
   useEditManager().setEditId(modId)
 
@@ -133,7 +124,7 @@ onMounted(async () => {
             <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
             <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :links="resolveModifyLinks(modId, 'presets')" :is-modifying="true" :active-step="2"/>
+          <StageStepper @click="saveAll" :links="resolveModifyLinks(modId, 'presets')" :is-modifying="true" :active-step="2"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">

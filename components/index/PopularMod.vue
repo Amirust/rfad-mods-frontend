@@ -34,7 +34,7 @@ onMounted(async () => {
 <template>
   <div class="relative">
     <transition name="fade">
-      <NuxtLink :to="url" v-if="mod" class="h-full w-full relative">
+      <NuxtLink :to="url" v-if="mod" class="h-full w-full">
         <NuxtImg class="w-full h-full mask" :src="mod.images[0]" placeholder/>
         <div class="absolute bottom-0 left-0">
           <div class="mx-3">

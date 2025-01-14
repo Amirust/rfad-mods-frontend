@@ -56,6 +56,8 @@ const shortDescriptionValidator = (value: string) => {
 
 onMounted(async () => {
   if (useCreateBoostyModStore().isDropped || !(await useAuthApi().isModerator())) return router.push('/create')
+  useCreateBoostyModStore().drop()
+
 
   if (createModStore.name) modName.value = createModStore.getName
   if (createModStore.shortDescription) modShortDescription.value = createModStore.getShortDescription
