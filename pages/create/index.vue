@@ -33,6 +33,7 @@ const goToBoosty = () => {
 
 
 onMounted(async () => {
+  useCreateModStore().drop()
   userIsModerator.value = await useAuthApi().isModerator()
 })
 </script>
