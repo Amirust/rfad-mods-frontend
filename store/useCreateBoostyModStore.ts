@@ -2,6 +2,12 @@ import { defineStore } from 'pinia';
 import type { ModTags } from '~/types/mod-tags.enum';
 import type { PresetTags } from '~/types/preset-tags.enum';
 import { BoostyTierEnum } from '~/types/boosty-tier.enum';
+import { useFilesApi } from '~/composables/useFilesApi';
+import resolveCDNImage from '~/utils/resolveCDNImage';
+import { useAuthStore } from '~/store/useAuthStore';
+import { usePresetsApi } from '~/composables/usePresetsApi';
+import { useModsApi } from '~/composables/useModsApi';
+import { useBoostyApi } from '~/composables/useBoostyApi';
 
 export interface UseCreateModStoreInterface {
   name: string
@@ -79,6 +85,34 @@ export const useCreateBoostyModStore = defineStore('createBoostyMod', {
       this.additionalLinks = data.additionalLinks
       this.images = data.images
       this.requiredTier = data.requiredTier
+      this.isDropped = data.isDropped
+    },
+    async uploadInfo(id: string) {
+      if (!this.requiredTier) return;
+
+      const images = [];
+
+      for await (const file of this.getImages) {
+        if (typeof file === 'string') {
+          images.push(file)
+          continue
+        }
+
+        const { hash } = await useFilesApi().uploadFile(file as File)
+        images.push(resolveCDNImage(useAuthStore().getUser!.id, hash, false))
+      }
+
+      await useBoostyApi().modify(id, {
+        name: this.name,
+        shortDescription: this.shortDescription,
+        description: this.description,
+        installGuide: this.installGuide,
+        tags: this.tags as ModTags[],
+        downloadLink: this.downloadLink,
+        additionalLinks: this.additionalLinks,
+        images: images,
+        requiredTier: this.requiredTier
+      })
     }
   },
   getters: {

@@ -34,6 +34,12 @@ const baseUrl = computed(() => `/mods/${modId}`)
 
 const isLoading = ref(false)
 
+const saveAll = () => {
+  editStore.setName(modName.value)
+  editStore.setShortDescription(modShortDescription.value)
+  editStore.setTags(selectedTags.value)
+}
+
 const go = () => {
   if (!isButtonActive.value) return
 
@@ -43,11 +49,7 @@ const go = () => {
 
   isLoading.value = true
 
-  useModsApi().modify(modId, {
-    name: modName.value,
-    shortDescription: modShortDescription.value,
-    tags: selectedTags.value
-  }).then(() => {
+  editStore.uploadInfo(modId).then(() => {
     isLoading.value = false
     router.push(baseUrl.value)
   })
@@ -55,7 +57,7 @@ const go = () => {
 
 const nameValidator = (value: string) => {
   if (value.length < 3) return 'Название должно быть длиннее 3 символов'
-  if (value.length > 25) return `Название должно быть короче ${Limits.ModNameMaxLength} символов`
+  if (value.length > Limits.ModNameMaxLength) return `Название должно быть короче ${Limits.ModNameMaxLength} символов`
 
   isNameValid.value = true
   return null
@@ -63,7 +65,7 @@ const nameValidator = (value: string) => {
 
 const shortDescriptionValidator = (value: string) => {
   if (value.length < 3) return 'Описание должно быть длиннее 3 символов'
-  if (value.length > 50) return `Описание должно быть короче ${Limits.ModShortDescriptionMaxLength} символов`
+  if (value.length > Limits.ModShortDescriptionMaxLength) return `Описание должно быть короче ${Limits.ModShortDescriptionMaxLength} символов`
 
   isShortDescriptionValid.value = true
   return null
@@ -83,11 +85,12 @@ onMounted(async () => {
 
   if (!data) return;
 
-  editStore.loadFromData({
-    type: 'mod',
-    ...data,
-    isDropped: false
-  })
+  if (editStore.isDropped)
+    editStore.loadFromData({
+      type: 'mod',
+      ...data,
+      isDropped: false
+    })
 
   useEditManager().setEditId(modId)
 
@@ -110,7 +113,7 @@ onMounted(async () => {
             <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
             <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :links="resolveModifyLinks(modId, 'mods')" :is-modifying="true" :active-step="1"/>
+          <StageStepper @click="saveAll" :links="resolveModifyLinks(modId, 'mods')" :is-modifying="true" :active-step="1"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">

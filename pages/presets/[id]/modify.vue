@@ -38,6 +38,12 @@ const baseUrl = computed(() => `/presets/${modId}`)
 
 const isLoading = ref(false)
 
+const saveAll = () => {
+  editStore.setName(modName.value)
+  editStore.setShortDescription(modShortDescription.value)
+  editStore.setTags([ ...selectedRace.value, ...selectedTags.value ])
+}
+
 const go = () => {
   if (!isButtonActive.value) return
 
@@ -87,11 +93,12 @@ onMounted(async () => {
 
   if (!data) return;
 
-  editStore.loadFromData({
-    type: 'preset',
-    ...data,
-    isDropped: false
-  })
+  if (editStore.isDropped)
+    editStore.loadFromData({
+      type: 'preset',
+      ...data,
+      isDropped: false
+    })
 
   useEditManager().setEditId(modId)
 
@@ -118,7 +125,7 @@ onMounted(async () => {
             <h3 class="text-3xl font-medium text-primary">Другие страницы?</h3>
             <h5 class="text-xl font-light text-secondary">Просто нажмите на категории внизу</h5>
           </div>
-          <StageStepper :links="resolveModifyLinks(modId, 'presets')" :is-modifying="true" :active-step="1"/>
+          <StageStepper @click="saveAll" :links="resolveModifyLinks(modId, 'presets')" :is-modifying="true" :active-step="1"/>
         </div>
         <div class="flex flex-col gap-9 w-full">
           <div class="flex flex-col ">
