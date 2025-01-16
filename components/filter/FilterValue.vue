@@ -17,7 +17,7 @@ const toggleActive = () => {
 </script>
 
 <template>
-  <div @click="toggleActive" class="flex flex-row text-secondary gap-3 items-center min-w-28">
+  <div @click="toggleActive" class="flex flex-row text-secondary gap-3 items-center min-w-30">
     <div
       :class="{
         'bg-secondaryHalf': !active,

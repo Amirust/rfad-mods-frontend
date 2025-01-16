@@ -9,9 +9,25 @@ const emit = defineEmits<FilterSelectorEvents>()
 const allowedToDisplay: Ref<number[]> = ref([])
 const selected = ref<number[]>([])
 
+const scrollable = ref<HTMLElement>()
+
+const canScrollDown = ref(false)
+const canScrollUp = ref(false)
+
+watch(scrollable, (value) => {
+  if (!value) return
+
+  value.addEventListener('scroll', () => {
+    const threshold = 20;
+    canScrollDown.value = value.scrollHeight - value.scrollTop - threshold > value.clientHeight;
+    canScrollUp.value = value.scrollTop > threshold;
+  })
+})
+
 const updateRefList = () => {
   return ModTagList.map((item) => {
     if (!item.doNotHide && allowedToDisplay.value.length && !item.values.every(({ value }) => allowedToDisplay.value.includes(value))) return undefined
+    if (item.values.length < 1) return;
     return {
       ...item,
       values: item.values.map((tag) => {
@@ -51,7 +67,13 @@ onMounted(() => {
 <template>
   <div>
     <!-- Just dont ask -->
-    <div class="hidden xl:flex flex-col gap-9 mt-[-6px]">
+    <div
+      ref="scrollable"
+      class="hidden xl:flex flex-col gap-9 mt-[-6px] max-h-[75svh] overflow-y-auto scrollbar-hide" :class="{
+        'fade-bottom': canScrollDown,
+        'fade-up': canScrollUp,
+        'fade-both': canScrollDown && canScrollUp
+      }">
       <transition-group name="fade">
         <div v-for="item in refList" :key="item?.category" class="flex flex-col gap-3">
           <span class="text-primary font-medium text-xl">{{ item?.category }}</span>
@@ -85,6 +107,21 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+@use 'assets/css/global' as *;
+
+.fade-bottom {
+  @include mask-image(0deg, 0rem, 6rem);
+}
+
+.fade-up {
+  @include mask-image(180deg, 0rem, 6rem);
+}
+
+.fade-both {
+  mask-composite: intersect;
+  mask-image: linear-gradient(0deg, transparent 0%, transparent 0rem, black 6rem), linear-gradient(180deg, transparent 0%, transparent 0rem, black 6rem);
+}
+
 .expand-enter-active,
 .expand-leave-active {
   transition: opacity 0.3s, height 0.3s;

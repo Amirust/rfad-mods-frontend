@@ -63,7 +63,7 @@ watch(selectedTags, () => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="flex flex-row gap-2">
+    <div class="flex flex-row flex-wrap gap-2">
       <transition-group name="fade">
         <div
           v-for="category in categories"
