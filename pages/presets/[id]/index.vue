@@ -39,6 +39,10 @@ const loadPreset = async () => {
     }
   }
 
+  useHead({
+    title: preset.value?.name
+  })
+
   // await waitUtil(150);
 
   isLoading.value = false;
@@ -54,6 +58,12 @@ onMounted(async () => {
   }).then(() => {
     userCanModify.value = true;
   });
+});
+
+onUnmounted(() => {
+  useHead({
+    title: null
+  })
 });
 </script>
 

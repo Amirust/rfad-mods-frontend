@@ -36,6 +36,10 @@ const loadMod = async () => {
     }
   }
 
+  useHead({
+    title: mod.value?.name
+  })
+
   // await waitUtil(4000);
 
   isLoading.value = false;
@@ -51,6 +55,12 @@ onMounted(async () => {
   }).then(() => {
     userCanModify.value = true;
   });
+});
+
+onUnmounted(() => {
+  useHead({
+    title: null
+  })
 });
 </script>
 

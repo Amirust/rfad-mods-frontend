@@ -43,6 +43,12 @@ const themeColor = computed(() => {
   return isBrowser() ? themeColorBrowser : themeColorServer
 })
 
+useHead({
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} - ${brand}` : title;
+  }
+})
+
 onMounted(async () => {
   await useAuthStore().authenticateUser(false)
 
