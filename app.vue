@@ -44,6 +44,7 @@ const themeColor = computed(() => {
 })
 
 useHead({
+  title: null,
   titleTemplate: (titleChunk) => {
     return titleChunk ? `${titleChunk} - ${brand}` : title;
   }
