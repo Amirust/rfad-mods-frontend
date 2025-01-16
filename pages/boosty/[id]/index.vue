@@ -37,6 +37,10 @@ const loadMod = async () => {
     }
   }
 
+  useHead({
+    title: mod.value?.name
+  })
+
   // await waitUtil(150);
 
   isLoading.value = false;

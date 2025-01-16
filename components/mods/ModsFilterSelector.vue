@@ -11,7 +11,7 @@ const selected = ref<number[]>([])
 
 const scrollable = ref<HTMLElement>()
 
-const canScrollDown = ref(false)
+const canScrollDown = ref(true)
 const canScrollUp = ref(false)
 
 watch(scrollable, (value) => {
