@@ -23,8 +23,8 @@ export const useFilesApi = () => {
     else throw new Error('No data')
   }
 
-  const deleteFile = async (hash: string) => {
-    const { error, data } = await useApiFetch<ApiResponse<{ ok: boolean }>>(Endpoints.deleteFile(hash), {
+  const deleteFile = async (hash: string, isUrl: boolean = false) => {
+    const { error, data } = await useApiFetch<ApiResponse<{ ok: boolean }>>(isUrl ? hash : Endpoints.deleteFile(hash), {
       method: 'DELETE'
     })
 

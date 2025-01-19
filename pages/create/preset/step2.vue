@@ -2,7 +2,7 @@
 
 import StageStepper from '~/components/create/StageStepper.vue';
 import Button from '~/components/base/Button.vue';
-import { useCreateModStore } from '~/store/useCreateModStore';
+import { type FileType, useCreateModStore } from '~/store/useCreateModStore';
 import { Limits } from '~/types/limits.enum';
 import CustomTextarea from '~/components/base/CustomTextarea.vue';
 import ImagesInput from '~/components/base/ImagesInput.vue';
@@ -65,7 +65,7 @@ onMounted(async () => {
   descriptionValidator(modDescription.value)
   installGuideValidator(modInstallGuide.value)
 
-  const data = await  useFilesApi().getQuota()
+  const data = await useFilesApi().getQuota()
   filesQuota.value = data.remaining
 })
 </script>
@@ -109,7 +109,7 @@ onMounted(async () => {
                 <div class="flex flex-col max-w-60 w-full gap-1">
                   <h2 class="text-3xl font-light text-primary">Предпросмотр</h2>
                 </div>
-                <div v-html="resolveMDUtil(modDescription)" class="w-full min-h-28 text-primary font-light whitespace-pre-wrap"/>
+                <div v-html="resolveMDUtil(modDescription)" class="w-full break-words break-all min-h-28 text-primary font-light whitespace-pre-wrap"/>
               </div>
             </AnimateHeight>
             <div class="flex flex-row gap-20 w-full">
@@ -135,7 +135,7 @@ onMounted(async () => {
                 <div class="flex flex-col max-w-60 w-full gap-1">
                   <h2 class="text-3xl font-light text-primary">Предпросмотр</h2>
                 </div>
-                <div v-html="resolveMDUtil(modInstallGuide)" class="w-full min-h-28 text-primary font-light"/>
+                <div v-html="resolveMDUtil(modInstallGuide)" class="w-full min-h-28 text-primary break-words break-all font-light"/>
               </div>
             </AnimateHeight>
             <div class="flex flex-row gap-20 w-full">

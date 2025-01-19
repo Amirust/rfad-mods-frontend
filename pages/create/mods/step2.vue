@@ -109,7 +109,7 @@ onMounted(async () => {
                 <div class="flex flex-col max-w-60 w-full gap-1">
                   <h2 class="text-3xl font-light text-primary">Предпросмотр</h2>
                 </div>
-                <div v-html="resolveMDUtil(modDescription)" class="w-full min-h-28 text-primary font-light whitespace-pre-wrap"/>
+                <div v-html="resolveMDUtil(modDescription)" class="w-full break-words break-all min-h-28 text-primary font-light whitespace-pre-wrap"/>
               </div>
             </AnimateHeight>
             <div class="flex flex-row gap-20 w-full">
@@ -133,7 +133,7 @@ onMounted(async () => {
                 <div class="flex flex-col max-w-60 w-full gap-1">
                   <h2 class="text-3xl font-light text-primary">Предпросмотр</h2>
                 </div>
-                <div v-html="resolveMDUtil(modInstallGuide)" class="w-full min-h-28 text-primary font-light"/>
+                <div v-html="resolveMDUtil(modInstallGuide)" class="w-full break-words break-all min-h-28 text-primary font-light"/>
               </div>
             </AnimateHeight>
             <div class="flex flex-row gap-20 w-full">

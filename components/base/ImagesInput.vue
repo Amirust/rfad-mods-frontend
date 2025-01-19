@@ -28,6 +28,11 @@ const upload = async (file: File) => {
   const url = URL.createObjectURL(file)
   img.src = url
 
+  if (file.size > 5 * 1024 * 1024) {
+    alert('Размер файла превышает 5 МБ. Пожалуйста, выберите файл поменьше или сожмите текущий.');
+    return;
+  }
+
   const loadImage = () => {
     return new Promise<{ width: number, height: number }>((resolve, reject) => {
       img.onload = () => {
