@@ -8,14 +8,14 @@ interface Result<T = string> {
 
 export default function (tags: PresetTags[]): Result {
   return {
-    race: PresetTagList.find(t => t.category === 'Раса')?.values.filter(e => tags.includes(e.value)).map(v => v.label) || [],
-    other: PresetTagList.find(t => t.category !== 'Раса')?.values.filter(e => tags.includes(e.value)).map(v => v.label) || []
+    race: PresetTagList.filter(t => t.category === 'Раса').flatMap(t => t.values.filter(e => tags.includes(e.value)).map(v => v.label)) || [],
+    other: PresetTagList.filter(t => t.category !== 'Раса').flatMap(t => t.values.filter(e => tags.includes(e.value)).map(v => v.label)) || []
   }
 }
 
 export function resolvePresetTagsRawResult(tags: PresetTags[]): Result<PresetTags> {
   return {
-    race: PresetTagList.find(t => t.category === 'Раса')?.values.filter(e => tags.includes(e.value)).map(v => v.value) || [],
-    other: PresetTagList.find(t => t.category !== 'Раса')?.values.filter(e => tags.includes(e.value)).map(v => v.value) || []
+    race: PresetTagList.filter(t => t.category === 'Раса').flatMap(t => t.values.filter(e => tags.includes(e.value)).map(v => v.value)) || [],
+    other: PresetTagList.filter(t => t.category !== 'Раса').flatMap(t => t.values.filter(e => tags.includes(e.value)).map(v => v.value)) || []
   }
 }

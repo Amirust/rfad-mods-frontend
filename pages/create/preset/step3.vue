@@ -9,6 +9,7 @@ import type { AdditionalLink } from '~/types/api/mods.types';
 import resolveCDNImage from '~/utils/resolveCDNImage';
 import { useAuthStore } from '~/store/useAuthStore';
 import type { PresetTags } from '~/types/preset-tags.enum';
+import type { TypedError } from '~/types/api/TypedError';
 
 const createModStore = useCreateModStore()
 const router = useRouter()
@@ -55,6 +56,12 @@ const go = async () => {
     ...createModStore.getMod,
     tags: createModStore.getTags as PresetTags[],
     images
+  }).catch((e) => {
+    for (const image of images)
+      useFilesApi().deleteFile(image.url, true)
+
+    alert(`Ошибка при создании пресета - ${(e as TypedError).errorCode}`)
+    throw e
   })
 
   useCreateModStore().drop()
