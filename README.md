@@ -24,9 +24,9 @@ A modern Website for exploring and managing RFAD mods and presets. It includes r
 This is a Nuxt 3 frontend. In production, it targets to Cloudflare Pages.
 
 ## Images
-[!Mod Creation Page Showcase](https://github.com/Amirust/rfad-mods-frontend/blob/master/images/modcreationpageshowcase.png)
-[!Mod Page Showcase](https://github.com/Amirust/rfad-mods-frontend/blob/master/images/modpageshowcase.png)
-[!Mods Page Showcase](https://github.com/Amirust/rfad-mods-frontend/blob/master/images/modspageshowcase.png)
+![Mod Creation Page Showcase](https://github.com/Amirust/rfad-mods-frontend/blob/master/images/modcreationpageshowcase.png)<br>
+![Mod Page Showcase](https://github.com/Amirust/rfad-mods-frontend/blob/master/images/modpageshowcase.png)<br>
+![Mods Page Showcase](https://github.com/Amirust/rfad-mods-frontend/blob/master/images/modspageshowcase.png)
 
 ## Features
 - Mods and presets browsing with categories and tags
